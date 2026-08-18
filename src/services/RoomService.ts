@@ -24,7 +24,8 @@ export class RoomService {
         allowHostForceReveal: input.allowHostForceReveal,
       },
       input.hostName,
-      players
+      players,
+      input.squadName
     );
 
     const room = RoomManager.getRoom(result.roomCode)!;

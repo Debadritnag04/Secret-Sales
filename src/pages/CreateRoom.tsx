@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGame } from '../store/GameStateContext';
-import { Settings, Users, Database, ShieldAlert, ArrowRight } from 'lucide-react';
+import { Settings, Users, ShieldAlert, ArrowRight, Loader2 } from 'lucide-react';
 
 export default function CreateRoom() {
   const navigate = useNavigate();
-  const { createRoom } = useGame();
+  const { createRoom, isConnecting, error: globalError } = useGame();
 
   const [form, setForm] = useState({
     name: 'Premier Auction 2026',
@@ -18,21 +18,35 @@ export default function CreateRoom() {
     allowHostForceReveal: true,
   });
 
-  const [error, setError] = useState('');
+  const [localError, setLocalError] = useState('');
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     if (form.budget < 10) {
-      setError('Starting budget must be at least 10 Cr.');
+      setLocalError('Starting budget must be at least 10 Cr.');
       return;
     }
     if (form.minBid < 1 || form.minBid >= form.budget) {
-      setError('Invalid minimum bid.');
+      setLocalError('Invalid minimum bid.');
       return;
     }
-    setError('');
-    createRoom(form, form.hostName, form.squadName);
-    navigate('/lobby');
+    setLocalError('');
+
+    const success = await createRoom({
+      auctionName: form.name,
+      hostName: form.hostName,
+      squadName: form.squadName,
+      startingBudget: form.budget,
+      maxParticipants: form.participantLimit,
+      minBid: form.minBid,
+      allowHostForceReveal: form.allowHostForceReveal,
+    });
+
+    if (success) {
+      navigate('/lobby');
+    }
   };
+
+  const displayError = localError || globalError;
 
   return (
     <div className="max-w-6xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -42,10 +56,10 @@ export default function CreateRoom() {
           <p className="text-zinc-400">Configure your room rules and invite managers.</p>
         </div>
 
-        {error && (
+        {displayError && (
           <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl flex items-center gap-3">
             <ShieldAlert className="w-5 h-5 flex-shrink-0" />
-            <p>{error}</p>
+            <p>{displayError}</p>
           </div>
         )}
 
@@ -147,16 +161,26 @@ export default function CreateRoom() {
             </div>
             <div className="flex justify-between">
               <span className="text-zinc-400">Player Pool</span>
-              <span className="text-white font-medium">Top 50 List</span>
+              <span className="text-white font-medium">Full Catalog</span>
             </div>
           </div>
 
           <button 
             onClick={handleCreate}
-            className="w-full mt-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-semibold transition-all flex items-center justify-center gap-2"
+            disabled={isConnecting}
+            className="w-full mt-8 py-4 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-xl font-semibold transition-all flex items-center justify-center gap-2"
           >
-            Create Room
-            <ArrowRight className="w-5 h-5" />
+            {isConnecting ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Creating...
+              </>
+            ) : (
+              <>
+                Create Room
+                <ArrowRight className="w-5 h-5" />
+              </>
+            )}
           </button>
           
           <button 
