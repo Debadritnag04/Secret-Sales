@@ -13,10 +13,8 @@
   <body>
     <div id="root"></div>
     <script>
-      // Configure backend URL for production deployment.
-      // Replace with your deployed backend URL (Railway/Render/Fly.io).
-      // Leave empty for local development (Vite proxy handles it).
-      window.__API_BASE__ = "";
+      // Backend URL for production (Render deployment).
+      window.__API_BASE__ = "https://secret-sales.onrender.com";
     </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
