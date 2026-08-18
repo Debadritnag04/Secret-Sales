@@ -14,6 +14,17 @@ import {
 } from '../interfaces.js';
 import { logger } from '../../utils/logger.js';
 
+function mapPositionGroup(position: string): string {
+  switch (position) {
+    case 'GK': return 'GK';
+    case 'CB': case 'LB': case 'RB': case 'LWB': case 'RWB': return 'DEF';
+    case 'CDM': case 'CM': case 'CAM': return 'MID';
+    case 'LM': case 'RM': case 'LW': case 'RW': return 'WING';
+    case 'ST': case 'CF': return 'ST';
+    default: return 'MID';
+  }
+}
+
 export class SupabaseClientFactory {
   private static client: SupabaseClient | null = null;
 
@@ -38,11 +49,8 @@ export class SupabasePlayerRepository implements IPlayerRepository {
   constructor(private supabase: SupabaseClient) {}
 
   async getPlayers(filter?: PlayerFilter): Promise<Player[]> {
-    let query = this.supabase.from('players').select('*');
+    let query = this.supabase.from('players').select('*').eq('is_active', true);
     if (filter) {
-      if (filter.status && filter.status !== 'all') {
-        query = query.eq('status', filter.status);
-      }
       if (filter.position) {
         query = query.eq('position', filter.position);
       }
@@ -50,7 +58,7 @@ export class SupabasePlayerRepository implements IPlayerRepository {
         query = query.ilike('name', `%${filter.search}%`);
       }
       if (filter.minRating !== undefined) {
-        query = query.gte('rating', filter.minRating);
+        query = query.gte('overall_rating', filter.minRating);
       }
     }
     const { data, error } = await query;
@@ -61,13 +69,13 @@ export class SupabasePlayerRepository implements IPlayerRepository {
     return (data || []).map((row: any) => ({
       id: row.id,
       name: row.name,
-      rating: row.rating,
+      rating: row.overall_rating,
       position: row.position,
-      club: row.club,
-      nationality: row.nationality,
-      photoUrl: row.photo_url || row.photoUrl || '',
-      basePrice: row.base_price || row.basePrice || 1,
-      status: row.status,
+      club: row.club || '',
+      nationality: row.nationality || '',
+      photoUrl: row.photo_url || '',
+      basePrice: 1,
+      status: row.is_active ? 'available' as const : 'unsold' as const,
     }));
   }
 
@@ -82,20 +90,21 @@ export class SupabasePlayerRepository implements IPlayerRepository {
     return {
       id: data.id,
       name: data.name,
-      rating: data.rating,
+      rating: data.overall_rating,
       position: data.position,
-      club: data.club,
-      nationality: data.nationality,
-      photoUrl: data.photo_url || data.photoUrl || '',
-      basePrice: data.base_price || data.basePrice || 1,
-      status: data.status,
+      club: data.club || '',
+      nationality: data.nationality || '',
+      photoUrl: data.photo_url || '',
+      basePrice: 1,
+      status: data.is_active ? 'available' as const : 'unsold' as const,
     };
   }
 
   async updatePlayerStatus(id: string, status: PlayerStatus): Promise<void> {
+    const isActive = status === 'available';
     const { error } = await this.supabase
       .from('players')
-      .update({ status })
+      .update({ is_active: isActive })
       .eq('id', id);
 
     if (error) {
@@ -107,13 +116,13 @@ export class SupabasePlayerRepository implements IPlayerRepository {
     const rows = players.map((p) => ({
       id: p.id,
       name: p.name,
-      rating: p.rating,
+      overall_rating: p.rating,
       position: p.position,
+      position_group: mapPositionGroup(p.position),
       club: p.club,
       nationality: p.nationality,
       photo_url: p.photoUrl,
-      base_price: p.basePrice,
-      status: p.status || 'available',
+      is_active: true,
     }));
     await this.supabase.from('players').upsert(rows);
   }
