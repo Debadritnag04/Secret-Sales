@@ -1,0 +1,6 @@
+{
+  "name": "Outsmart FC",
+  "description": "Premium football manager sealed-bid auction platform.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
