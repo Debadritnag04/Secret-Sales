@@ -6,16 +6,17 @@ import { useState } from 'react';
 type SortConfig = 'budget' | 'spent' | 'players' | 'rating';
 
 export default function Standings() {
-  const { room } = useGame();
+  const { room, credentials } = useGame();
   const [sort, setSort] = useState<SortConfig>('budget');
 
-  if (!room) return <Navigate to="/" />;
+  if (!room && !credentials) return <Navigate to="/" />;
+  if (!room) return null;
 
   const sortedSquads = [...room.squads].sort((a, b) => {
     switch (sort) {
       case 'budget': return b.budget - a.budget;
-      case 'spent': return (room.settings.budget - b.budget) - (room.settings.budget - a.budget);
-      case 'players': return b.players.length - a.players.length;
+      case 'spent': return b.spent - a.spent;
+      case 'players': return b.playerCount - a.playerCount;
       case 'rating': {
         const aRating = a.players.reduce((acc, p) => acc + p.player.rating, 0);
         const bRating = b.players.reduce((acc, p) => acc + p.player.rating, 0);

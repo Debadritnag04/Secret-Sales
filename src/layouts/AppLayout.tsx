@@ -1,11 +1,11 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useGame } from '../store/GameStateContext';
-import { Shield, Settings, LogOut, LayoutDashboard, Users, History, Trophy } from 'lucide-react';
+import { Shield, LogOut, LayoutDashboard, Users, History, Trophy } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function AppLayout() {
-  const { currentUser, room, leaveRoom } = useGame();
+  const { credentials, room, leaveRoom } = useGame();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -14,8 +14,9 @@ export default function AppLayout() {
     navigate('/');
   };
 
-  const isAuctionActive = room?.status === 'active';
-  const showSidebar = room && currentUser;
+  const isAuctionActive = room?.phase === 'BIDDING' || room?.phase === 'REVEALING' || room?.phase === 'STARTING';
+  const isCompleted = room?.phase === 'COMPLETED' || room?.phase === 'ENDED';
+  const showSidebar = room && credentials;
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-50 flex flex-col font-sans selection:bg-emerald-500/30">
@@ -26,22 +27,24 @@ export default function AppLayout() {
           <span className="font-bold tracking-tight text-lg hidden sm:block">Outsmart FC</span>
         </div>
 
-        {room && currentUser && (
+        {room && credentials && (
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 bg-zinc-900 px-3 py-1.5 rounded-full border border-zinc-800">
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-sm font-medium text-zinc-300 font-mono tracking-wider">{room.code}</span>
+              <span className="text-sm font-medium text-zinc-300 font-mono tracking-wider">{room.roomCode}</span>
             </div>
             
             <div className="hidden sm:flex items-center gap-3 border-l border-zinc-800 pl-4">
-              <img src={`https://api.dicebear.com/7.x/shapes/svg?seed=${currentUser.squadId}`} alt="badge" className="w-8 h-8 rounded-md bg-zinc-800" />
+              <div className="w-8 h-8 rounded-md bg-zinc-800 flex items-center justify-center text-sm font-bold text-emerald-400">
+                {credentials.squadName.charAt(0).toUpperCase()}
+              </div>
               <div className="flex flex-col">
-                <span className="text-sm font-semibold leading-none">{currentUser.name}</span>
-                <span className="text-xs text-zinc-400 mt-1">{currentUser.isHost ? 'Host' : 'Manager'}</span>
+                <span className="text-sm font-semibold leading-none">{credentials.displayName}</span>
+                <span className="text-xs text-zinc-400 mt-1">{credentials.isHost ? 'Host' : 'Manager'}</span>
               </div>
             </div>
 
-            <button onClick={handleLeave} className="p-2 hover:bg-zinc-800 rounded-md text-zinc-400 hover:text-zinc-100 transition-colors" title="Leave Room">
+            <button onClick={handleLeave} className="p-2 hover:bg-zinc-800 rounded-md text-zinc-400 hover:text-zinc-100 transition-colors cursor-pointer" title="Leave Room">
               <LogOut className="w-4 h-4" />
             </button>
           </div>
@@ -56,7 +59,7 @@ export default function AppLayout() {
             <NavButton to="/team" icon={Shield} label="My Squad" active={location.pathname === '/team'} />
             <NavButton to="/standings" icon={Users} label="Standings" active={location.pathname === '/standings'} />
             <NavButton to="/pool" icon={History} label="Player Pool" active={location.pathname === '/pool'} />
-            {room.status === 'finished' && <NavButton to="/results" icon={Trophy} label="Results" active={location.pathname === '/results'} />}
+            {isCompleted && <NavButton to="/results" icon={Trophy} label="Results" active={location.pathname === '/results'} />}
           </aside>
         )}
 
@@ -79,13 +82,13 @@ export default function AppLayout() {
   );
 }
 
-function NavButton({ to, icon: Icon, label, active }: { to: string, icon: any, label: string, active: boolean }) {
+function NavButton({ to, icon: Icon, label, active }: { to: string; icon: any; label: string; active: boolean }) {
   const navigate = useNavigate();
   return (
     <button
       onClick={() => navigate(to)}
       className={cn(
-        "flex items-center gap-3 px-4 sm:px-6 py-3 mx-2 rounded-lg transition-all",
+        "flex items-center gap-3 px-4 sm:px-6 py-3 mx-2 rounded-lg transition-all cursor-pointer",
         active ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-200"
       )}
     >

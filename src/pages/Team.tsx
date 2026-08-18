@@ -6,12 +6,13 @@ import { useMemo, useState } from 'react';
 import { Position } from '../types';
 
 export default function Team() {
-  const { room, currentUser } = useGame();
+  const { room, credentials } = useGame();
   const [filter, setFilter] = useState<Position | 'ALL'>('ALL');
 
-  if (!room || !currentUser) return <Navigate to="/" />;
+  if (!room && !credentials) return <Navigate to="/" />;
+  if (!room || !credentials) return null;
 
-  const mySquad = room.squads.find(s => s.id === currentUser.squadId);
+  const mySquad = room.squads.find(s => s.id === credentials.squadId);
   if (!mySquad) return <Navigate to="/" />;
 
   const totalSpent = room.settings.budget - mySquad.budget;
