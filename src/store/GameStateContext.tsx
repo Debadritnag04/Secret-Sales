@@ -141,7 +141,9 @@ function clearSession(): void {
 
 // ─── API Helpers ─────────────────────────────────────────────────────────────
 
-const API_BASE = '';
+// In production (Vercel), point to the deployed backend.
+// In development, empty string means requests go to same origin (proxied by Vite).
+const API_BASE = (window as any).__API_BASE__ || '';
 
 async function apiPost<T>(path: string, body: any): Promise<{ data?: T; error?: string; code?: string }> {
   try {

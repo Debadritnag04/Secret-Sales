@@ -12,6 +12,12 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // Configure backend URL for production deployment.
+      // Replace with your deployed backend URL (Railway/Render/Fly.io).
+      // Leave empty for local development (Vite proxy handles it).
+      window.__API_BASE__ = "";
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
