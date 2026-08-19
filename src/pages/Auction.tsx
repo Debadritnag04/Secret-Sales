@@ -52,6 +52,11 @@ export default function Auction() {
   const handleBid = () => {
     const amount = Number(bidInput);
     if (isNaN(amount) || amount < 0) return;
+    // Validate 1 decimal place max
+    const parts = bidInput.split('.');
+    if (parts[1] && parts[1].length > 1) return;
+    // Normal bid must be > 0
+    if (amount <= 0) return;
     submitBid(amount);
     setBidInput('');
   };
@@ -370,13 +375,14 @@ export default function Auction() {
                             value={bidInput}
                             onChange={(e) => setBidInput(e.target.value)}
                             placeholder="Enter bid amount..."
-                            min="0"
+                            min="0.1"
+                            step="0.1"
                             className="w-full bg-zinc-900 border border-zinc-800 rounded-xl pl-11 pr-4 py-4 text-white text-lg font-bold focus:outline-none focus:border-emerald-500 transition-colors placeholder:text-zinc-600 placeholder:font-normal"
                           />
                         </div>
                         <button
                           onClick={handleBid}
-                          disabled={bidInput === '' || Number(bidInput) < 0 || Number(bidInput) > myBudget}
+                          disabled={!bidInput || Number(bidInput) <= 0 || Number(bidInput) > myBudget}
                           className="px-8 bg-emerald-600 hover:bg-emerald-500 disabled:bg-zinc-800 disabled:text-zinc-500 text-white rounded-xl font-bold text-lg transition-all cursor-pointer"
                         >
                           Submit

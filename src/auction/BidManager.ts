@@ -45,17 +45,23 @@ export class BidManager {
       return { valid: false, code: 'INVALID_BID_AMOUNT', message: 'Bid amount must be a non-negative number' };
     }
 
-    // A bid of 0 is always valid — it means "I do not want this player"
+    // Validate max 1 decimal place (0.1 Cr precision)
+    const decimalPart = bidAmount.toString().split('.')[1];
+    if (decimalPart && decimalPart.length > 1) {
+      return { valid: false, code: 'INVALID_BID_AMOUNT', message: 'Bid can have at most 1 decimal place (0.1 Cr precision)' };
+    }
+
+    // A bid of 0 is always valid — it means "I do not want this player" (PASS)
     if (bidAmount === 0) {
       return { valid: true };
     }
 
-    const minRequiredBid = Math.max(settings.minBid, auctionState.currentPlayer.basePrice || 1);
+    const minRequiredBid = settings.minBid || 0.1;
     if (bidAmount < minRequiredBid) {
       return {
         valid: false,
         code: 'BID_BELOW_MINIMUM',
-        message: `Bid must be at least the base price of ${minRequiredBid} Cr`,
+        message: `Bid must be at least ${minRequiredBid} Cr`,
       };
     }
 
