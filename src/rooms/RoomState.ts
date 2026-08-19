@@ -21,10 +21,11 @@ export class RoomStateFactory {
       participantId: hostParticipantId,
       ownerName: hostName,
       squadName: `${hostName}'s Squad`,
-      budget: settings.startingBudget,
-      startingBudget: settings.startingBudget,
+      budget: settings.purseMode === 'CUSTOM' ? 0 : settings.startingBudget,
+      startingBudget: settings.purseMode === 'CUSTOM' ? 0 : settings.startingBudget,
       spent: 0,
       isReady: true,
+      purseConfirmed: settings.purseMode === 'SAME', // Auto-confirmed in SAME mode
       roster: [],
     };
 

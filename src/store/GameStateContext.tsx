@@ -20,6 +20,7 @@ interface SquadInfo {
   budget: number;
   spent: number;
   isReady: boolean;
+  purseConfirmed: boolean;
   playerCount: number;
   roster: any[];
 }
@@ -39,6 +40,7 @@ interface PlayerInfo {
 interface RoomSettings {
   auctionName: string;
   startingBudget: number;
+  purseMode: 'SAME' | 'CUSTOM';
   minParticipants: number;
   maxParticipants: number;
   minBid: number;
@@ -106,6 +108,7 @@ interface GameContextType {
   kickSquad: (squadId: string) => void;
   recallPlayer: (playerId: string) => void;
   resolveDecider: (winningTeamId: string, finalPrice: number) => void;
+  confirmPurse: (amount: number) => void;
   restoreSession: () => Promise<boolean>;
 }
 
@@ -117,6 +120,7 @@ interface CreateRoomParams {
   maxParticipants: number;
   minBid: number;
   allowHostForceReveal: boolean;
+  purseMode?: 'SAME' | 'CUSTOM';
 }
 
 const GameContext = createContext<GameContextType | null>(null);
@@ -400,6 +404,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       maxParticipants: params.maxParticipants,
       minBid: params.minBid,
       allowHostForceReveal: params.allowHostForceReveal,
+      purseMode: params.purseMode || 'SAME',
     });
 
     if (apiError || !data) {
@@ -578,6 +583,13 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     socketRef.current.emit('auction:resolve_decider' as any, { winningTeamId, finalPrice });
   }, [credentials]);
 
+  // ─── Confirm Purse (Custom mode — each squad sets own) ──────────────────
+
+  const confirmPurse = useCallback((amount: number) => {
+    if (!socketRef.current || !credentials) return;
+    socketRef.current.emit('room:confirm_purse' as any, { amount });
+  }, [credentials]);
+
   // ─── Auto-restore session on mount ───────────────────────────────────────
 
   useEffect(() => {
@@ -631,6 +643,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       kickSquad,
       recallPlayer,
       resolveDecider,
+      confirmPurse,
       restoreSession,
     }}>
       {children}

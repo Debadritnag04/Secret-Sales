@@ -16,6 +16,7 @@ describe('RoomManager', () => {
         maxParticipants: 12,
         minBid: 1,
         allowHostForceReveal: true,
+    purseMode: 'SAME',
       },
       'Alex',
       INITIAL_PLAYER_POOL,
@@ -43,6 +44,7 @@ describe('RoomManager', () => {
         maxParticipants: 3, // limit to 3 (host + 2 guests)
         minBid: 1,
         allowHostForceReveal: true,
+    purseMode: 'SAME',
       },
       'HostUser',
       INITIAL_PLAYER_POOL
@@ -69,6 +71,7 @@ describe('RoomManager', () => {
         maxParticipants: 12,
         minBid: 1,
         allowHostForceReveal: true,
+    purseMode: 'SAME',
       },
       'HostUser',
       INITIAL_PLAYER_POOL,
@@ -89,6 +92,7 @@ describe('RoomManager', () => {
         maxParticipants: 12,
         minBid: 1,
         allowHostForceReveal: true,
+    purseMode: 'SAME',
       },
       'HostUser',
       INITIAL_PLAYER_POOL

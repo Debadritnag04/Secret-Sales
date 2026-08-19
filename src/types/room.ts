@@ -2,9 +2,12 @@ import { Squad } from './team.js';
 import { AuctionState, AuctionPhase, DeciderState, DeciderRecord } from './auction.js';
 import { Player } from './player.js';
 
+export type PurseMode = 'SAME' | 'CUSTOM';
+
 export interface RoomSettings {
   auctionName: string;
   startingBudget: number;
+  purseMode: PurseMode;
   minParticipants: number;
   maxParticipants: number;
   minBid: number;
@@ -63,6 +66,7 @@ export interface PublicRoomState {
     budget: number;
     spent: number;
     isReady: boolean;
+    purseConfirmed: boolean;
     playerCount: number;
     roster: Squad['roster'];
   }[];
@@ -75,6 +79,7 @@ export interface PublicRoomState {
   unsoldCount: number;
   deciderState: DeciderState | null;
   deciderHistory: DeciderRecord[];
+  allPursesConfirmed: boolean;
 }
 
 export interface PrivateParticipantState extends PublicRoomState {

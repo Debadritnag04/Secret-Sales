@@ -87,6 +87,26 @@ export function registerSocketEvents(
     }
   });
 
+  // 2b. Confirm Purse (Custom Purse mode)
+  socket.on('room:confirm_purse' as any, (data: any, callback?: any) => {
+    const amount = data?.amount;
+    if (amount === undefined || amount === null) {
+      socket.emit('error', { code: 'VALIDATION_ERROR', message: 'Purse amount is required' });
+      if (callback) callback({ status: 'error', message: 'Purse amount is required' });
+      return;
+    }
+
+    try {
+      RoomManager.confirmPurse(roomCode, participantId, Number(amount));
+      // Broadcast full state so host and everyone sees the updated purse status
+      broadcastStateUpdates(io, roomCode);
+      if (callback) callback({ status: 'ok' });
+    } catch (err: any) {
+      socket.emit('error', { code: err.code || 'PURSE_ERROR', message: err.message });
+      if (callback) callback({ status: 'error', message: err.message });
+    }
+  });
+
   // 3. Auction Start (Host only)
   socket.on('auction:start', async () => {
     try {

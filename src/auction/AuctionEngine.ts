@@ -56,6 +56,24 @@ export class AuctionEngine {
       );
     }
 
+    // Validate all purses confirmed in CUSTOM mode
+    if (room.settings.purseMode === 'CUSTOM') {
+      for (const squad of room.squads.values()) {
+        if (!squad.purseConfirmed) {
+          throw createError(
+            'VALIDATION_ERROR',
+            `All squads must confirm their starting purse before the auction can begin. ${squad.squadName} has not confirmed.`
+          );
+        }
+        if (squad.startingBudget <= 0) {
+          throw createError(
+            'VALIDATION_ERROR',
+            `${squad.squadName} has an invalid purse amount.`
+          );
+        }
+      }
+    }
+
     this.transitionPhase(room, 'STARTING');
 
     // Initialize player sequence
@@ -398,6 +416,7 @@ export class AuctionEngine {
       budget: s.budget,
       spent: s.spent,
       isReady: s.isReady,
+      purseConfirmed: s.purseConfirmed,
       playerCount: s.roster.length,
       roster: s.roster,
     }));
@@ -427,6 +446,7 @@ export class AuctionEngine {
       unsoldCount: (room.auctionState.unsoldPlayers || []).filter(u => !u.recalled).length,
       deciderState: room.auctionState.deciderState || null,
       deciderHistory: room.auctionState.deciderHistory || [],
+      allPursesConfirmed: room.settings.purseMode === 'SAME' || Array.from(room.squads.values()).every(s => s.purseConfirmed),
     };
   }
 

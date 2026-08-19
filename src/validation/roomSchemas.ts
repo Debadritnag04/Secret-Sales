@@ -4,6 +4,7 @@ export const createRoomSchema = z.object({
   auctionName: z.string().min(2, 'Auction name must be at least 2 characters').max(100),
   hostName: z.string().min(1, 'Host name is required').max(50),
   squadName: z.string().min(1, 'Squad name is required').max(50).optional(),
+  purseMode: z.enum(['SAME', 'CUSTOM']).default('SAME'),
   startingBudget: z
     .number()
     .positive('Starting budget must be greater than 0')

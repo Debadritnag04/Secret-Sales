@@ -24,8 +24,7 @@ const createSquad = (id: string, name: string, budget = 200): Squad => ({
   budget,
   startingBudget: budget,
   spent: 0,
-  isReady: true,
-  roster: [],
+  isReady: true, purseConfirmed: true, roster: [],
 });
 
 describe('WinnerResolver', () => {

@@ -1,13 +1,14 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useGame } from '../store/GameStateContext';
-import { Users, Copy, Shield, Play, LogOut, X } from 'lucide-react';
+import { Users, Copy, Shield, Play, LogOut, X, Wallet, CheckCircle2 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function Lobby() {
-  const { room, credentials, toggleReady, startAuction, leaveRoom, kickSquad } = useGame();
+  const { room, credentials, toggleReady, startAuction, leaveRoom, kickSquad, confirmPurse } = useGame();
   const navigate = useNavigate();
+  const [purseInput, setPurseInput] = useState('');
 
   useEffect(() => {
     if (room?.phase === 'BIDDING' || room?.phase === 'STARTING') {
@@ -36,6 +37,10 @@ export default function Lobby() {
   const readyCount = participants.filter(p => p.isReady).length;
   const totalCount = participants.length;
   const maxParticipants = room.settings?.maxParticipants ?? 12;
+  const isCustomPurse = room.settings?.purseMode === 'CUSTOM';
+  const allPursesConfirmed = (room as any).allPursesConfirmed ?? true;
+  const mySquad = squads.find(s => s.id === credentials?.squadId);
+  const myPurseConfirmed = mySquad?.purseConfirmed ?? true;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(room.roomCode);
@@ -50,7 +55,16 @@ export default function Lobby() {
     navigate('/');
   };
 
-  const mySquad = squads.find(s => s.id === credentials?.squadId);
+  const handleConfirmPurse = () => {
+    const amount = Number(purseInput);
+    if (isNaN(amount) || amount <= 0) return;
+    const parts = purseInput.split('.');
+    if (parts[1] && parts[1].length > 1) return;
+    confirmPurse(amount);
+  };
+
+  const confirmedCount = squads.filter(s => s.purseConfirmed).length;
+  const canStart = isCustomPurse ? allPursesConfirmed : true;
 
   return (
     <div className="max-w-6xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -71,6 +85,51 @@ export default function Lobby() {
             </button>
           </div>
         </div>
+
+        {/* Custom Purse Configuration — for the current participant */}
+        {isCustomPurse && !myPurseConfirmed && (
+          <div className="bg-amber-950/20 border border-amber-500/20 rounded-2xl p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <Wallet className="w-5 h-5 text-amber-400" />
+              <h3 className="text-lg font-semibold text-white">Set Your Starting Purse</h3>
+            </div>
+            <p className="text-sm text-zinc-400 mb-4">Choose your squad's starting budget for this auction.</p>
+            <div className="flex items-center gap-3">
+              <input
+                type="number"
+                value={purseInput}
+                onChange={(e) => setPurseInput(e.target.value)}
+                min="1"
+                max="9999.9"
+                step="0.1"
+                placeholder="e.g. 200"
+                className="flex-1 bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white text-lg font-bold focus:outline-none focus:border-amber-500 transition-colors"
+              />
+              <span className="text-zinc-400 font-medium">Cr</span>
+              <button
+                onClick={handleConfirmPurse}
+                disabled={!purseInput || Number(purseInput) <= 0}
+                className="px-5 py-3 bg-amber-600 hover:bg-amber-500 disabled:bg-zinc-800 disabled:text-zinc-500 text-white rounded-xl font-semibold transition-all cursor-pointer"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Custom Purse Confirmed — show current purse */}
+        {isCustomPurse && myPurseConfirmed && mySquad && (
+          <div className="bg-emerald-950/20 border border-emerald-500/20 rounded-2xl p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+              <div>
+                <p className="text-white font-medium">Purse Confirmed</p>
+                <p className="text-xs text-zinc-400">Your starting budget is set</p>
+              </div>
+            </div>
+            <p className="text-2xl font-bold text-emerald-400">{mySquad.budget} Cr</p>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <AnimatePresence mode="popLayout">
@@ -103,9 +162,19 @@ export default function Lobby() {
                     {squad.isReady ? 'Ready' : 'Waiting'}
                   </span>
                 </div>
-                {participants.find(p => p.squadName === squad.squadName)?.isHost && (
-                  <Shield className="w-4 h-4 text-emerald-500" />
-                )}
+                <div className="flex items-center gap-2">
+                  {/* Purse status indicator for custom mode */}
+                  {isCustomPurse && (
+                    <span className={cn("text-[10px] font-semibold px-1.5 py-0.5 rounded",
+                      squad.purseConfirmed ? "bg-emerald-500/20 text-emerald-400" : "bg-amber-500/20 text-amber-400"
+                    )}>
+                      {squad.purseConfirmed ? (isHost ? `${squad.budget} Cr` : '✓') : '⚠'}
+                    </span>
+                  )}
+                  {participants.find(p => p.squadName === squad.squadName)?.isHost && (
+                    <Shield className="w-4 h-4 text-emerald-500" />
+                  )}
+                </div>
               </div>
 
               {isHost && !participants.find(p => p.squadName === squad.squadName)?.isHost && (
@@ -137,19 +206,49 @@ export default function Lobby() {
           <h3 className="text-lg font-semibold text-white mb-6">Session Rules</h3>
           <div className="space-y-4 text-sm">
             <div className="flex justify-between border-b border-zinc-800/50 pb-3">
-              <span className="text-zinc-400">Starting Budget</span>
-              <span className="text-emerald-400 font-medium">{room.settings.startingBudget} Cr</span>
+              <span className="text-zinc-400">Purse Mode</span>
+              <span className={cn("font-medium", isCustomPurse ? "text-amber-400" : "text-white")}>
+                {isCustomPurse ? 'Per-Squad Custom' : 'Same for All'}
+              </span>
             </div>
+            {!isCustomPurse && (
+              <div className="flex justify-between border-b border-zinc-800/50 pb-3">
+                <span className="text-zinc-400">Starting Budget</span>
+                <span className="text-emerald-400 font-medium">{room.settings?.startingBudget} Cr</span>
+              </div>
+            )}
             <div className="flex justify-between border-b border-zinc-800/50 pb-3">
               <span className="text-zinc-400">Min Bid</span>
-              <span className="text-white font-medium">{room.settings.minBid} Cr</span>
+              <span className="text-white font-medium">{room.settings?.minBid} Cr</span>
             </div>
             <div className="flex justify-between pb-3">
               <span className="text-zinc-400">Host Force Reveal</span>
-              <span className="text-white font-medium">{room.settings.allowHostForceReveal ? 'Yes' : 'No'}</span>
+              <span className="text-white font-medium">{room.settings?.allowHostForceReveal ? 'Yes' : 'No'}</span>
             </div>
           </div>
         </div>
+
+        {/* Custom Purse Status (Host view) */}
+        {isCustomPurse && isHost && (
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
+            <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4">Purse Status</h3>
+            <div className="space-y-2">
+              {squads.map(squad => (
+                <div key={squad.id} className="flex items-center justify-between py-2 border-b border-zinc-800/50 last:border-0">
+                  <span className="text-sm text-white truncate max-w-[120px]">{squad.squadName}</span>
+                  {squad.purseConfirmed ? (
+                    <span className="text-xs font-bold text-emerald-400">{squad.budget} Cr</span>
+                  ) : (
+                    <span className="text-xs font-bold text-amber-400">Waiting</span>
+                  )}
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-zinc-500 mt-3 text-center">
+              {confirmedCount} / {squads.length} confirmed
+            </p>
+          </div>
+        )}
 
         <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
           <div className="text-center mb-6">
@@ -176,7 +275,13 @@ export default function Lobby() {
             {isHost && (
               <button 
                 onClick={handleStart}
-                className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-semibold transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_-5px_rgba(16,185,129,0.4)] cursor-pointer"
+                disabled={!canStart}
+                className={cn(
+                  "w-full py-4 text-white rounded-xl font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer",
+                  canStart
+                    ? "bg-emerald-600 hover:bg-emerald-500 shadow-[0_0_20px_-5px_rgba(16,185,129,0.4)]"
+                    : "bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                )}
               >
                 Start Auction
                 <Play className="w-5 h-5 fill-current" />
@@ -192,7 +297,10 @@ export default function Lobby() {
             </button>
           </div>
 
-          {isHost && (
+          {isHost && !canStart && isCustomPurse && (
+            <p className="text-xs text-center text-amber-400 mt-4">All squads must confirm their purse before starting.</p>
+          )}
+          {isHost && canStart && (
             <p className="text-xs text-center text-zinc-500 mt-4">You can start the auction when ready.</p>
           )}
         </div>

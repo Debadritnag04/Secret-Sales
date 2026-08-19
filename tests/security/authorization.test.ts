@@ -18,6 +18,7 @@ describe('Security & Authorization Tests', () => {
         maxParticipants: 12,
         minBid: 1,
         allowHostForceReveal: true,
+    purseMode: 'SAME',
       },
       'HostUser',
       INITIAL_PLAYER_POOL
@@ -42,6 +43,7 @@ describe('Security & Authorization Tests', () => {
         maxParticipants: 12,
         minBid: 1,
         allowHostForceReveal: true,
+    purseMode: 'SAME',
       },
       'HostUser',
       INITIAL_PLAYER_POOL
@@ -69,6 +71,7 @@ describe('Security & Authorization Tests', () => {
         maxParticipants: 12,
         minBid: 1,
         allowHostForceReveal: true,
+    purseMode: 'SAME',
       },
       'HostUser',
       INITIAL_PLAYER_POOL
@@ -88,6 +91,7 @@ describe('Security & Authorization Tests', () => {
         maxParticipants: 12,
         minBid: 1,
         allowHostForceReveal: true,
+    purseMode: 'SAME',
       },
       'HostUser',
       INITIAL_PLAYER_POOL

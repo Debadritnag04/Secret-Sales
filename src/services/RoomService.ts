@@ -18,6 +18,7 @@ export class RoomService {
       {
         auctionName: input.auctionName,
         startingBudget: input.startingBudget,
+        purseMode: input.purseMode || 'SAME',
         minParticipants: 1, // flexible for testing, standard 9-12
         maxParticipants: input.maxParticipants,
         minBid: input.minBid,

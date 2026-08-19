@@ -6,6 +6,8 @@ import { cn } from '../lib/utils';
 
 const PRESET_PURSES = [100, 150, 200, 250, 300];
 
+type PurseModeUI = 'SAME' | 'CUSTOM';
+
 export default function CreateRoom() {
   const navigate = useNavigate();
   const { createRoom, isConnecting, error: globalError } = useGame();
@@ -19,38 +21,36 @@ export default function CreateRoom() {
     allowHostForceReveal: true,
   });
 
-  const [purseMode, setPurseMode] = useState<'PRESET' | 'CUSTOM'>('PRESET');
-  const [presetPurse, setPresetPurse] = useState(200);
-  const [customPurseInput, setCustomPurseInput] = useState('200');
+  const [purseMode, setPurseMode] = useState<PurseModeUI>('SAME');
+  const [samePurseValue, setSamePurseValue] = useState(200);
+  const [samePurseCustom, setSamePurseCustom] = useState(false);
+  const [samePurseCustomInput, setSamePurseCustomInput] = useState('200');
   const [localError, setLocalError] = useState('');
 
   const getStartingBudget = (): number => {
-    if (purseMode === 'PRESET') return presetPurse;
-    return Number(customPurseInput) || 0;
+    if (purseMode === 'CUSTOM') return 200; // Placeholder — each squad sets own in room
+    if (samePurseCustom) return Number(samePurseCustomInput) || 0;
+    return samePurseValue;
   };
 
-  const validatePurse = (): string | null => {
-    const budget = getStartingBudget();
-    if (budget <= 0) return 'Purse must be greater than 0 Cr.';
-    if (budget > 9999.9) return 'Purse cannot exceed 9999.9 Cr.';
-    if (purseMode === 'CUSTOM') {
-      const parts = customPurseInput.split('.');
-      if (parts[1] && parts[1].length > 1) return 'Purse can have at most 1 decimal place.';
+  const validateForm = (): string | null => {
+    if (purseMode === 'SAME') {
+      const budget = getStartingBudget();
+      if (budget <= 0) return 'Purse must be greater than 0 Cr.';
+      if (budget > 9999.9) return 'Purse cannot exceed 9999.9 Cr.';
+      if (samePurseCustom) {
+        const parts = samePurseCustomInput.split('.');
+        if (parts[1] && parts[1].length > 1) return 'Purse can have at most 1 decimal place.';
+      }
     }
+    if (form.minBid < 0.1) return 'Minimum bid must be at least 0.1 Cr.';
     return null;
   };
 
   const handleCreate = async () => {
-    const purseError = validatePurse();
-    if (purseError) {
-      setLocalError(purseError);
-      return;
-    }
-
-    const budget = getStartingBudget();
-
-    if (form.minBid < 0.1 || form.minBid >= budget) {
-      setLocalError('Invalid minimum bid.');
+    const validationError = validateForm();
+    if (validationError) {
+      setLocalError(validationError);
       return;
     }
     setLocalError('');
@@ -59,10 +59,11 @@ export default function CreateRoom() {
       auctionName: form.name,
       hostName: form.hostName,
       squadName: form.squadName,
-      startingBudget: budget,
+      startingBudget: purseMode === 'SAME' ? getStartingBudget() : 200, // 200 is placeholder for CUSTOM mode
       maxParticipants: form.participantLimit,
       minBid: form.minBid,
       allowHostForceReveal: form.allowHostForceReveal,
+      purseMode,
     });
 
     if (success) {
@@ -71,7 +72,6 @@ export default function CreateRoom() {
   };
 
   const displayError = localError || globalError;
-  const displayBudget = getStartingBudget();
 
   return (
     <div className="max-w-6xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -142,68 +142,85 @@ export default function CreateRoom() {
             <Wallet className="w-5 h-5 text-emerald-500" />
             <h2 className="text-xl font-semibold text-white">Starting Purse</h2>
           </div>
-          <p className="text-sm text-zinc-400 mb-4">Choose the starting budget for each squad.</p>
 
-          {/* Preset / Custom Toggle */}
+          {/* Same / Custom Mode Toggle */}
           <div className="flex gap-2 mb-6">
             <button
-              onClick={() => setPurseMode('PRESET')}
+              onClick={() => setPurseMode('SAME')}
               className={cn(
-                "px-4 py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer",
-                purseMode === 'PRESET' ? "bg-emerald-600 text-white" : "bg-zinc-800 text-zinc-400 hover:text-white"
+                "px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors cursor-pointer",
+                purseMode === 'SAME' ? "bg-emerald-600 text-white" : "bg-zinc-800 text-zinc-400 hover:text-white"
               )}
             >
-              Preset
+              Same Purse
             </button>
             <button
               onClick={() => setPurseMode('CUSTOM')}
               className={cn(
-                "px-4 py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer",
-                purseMode === 'CUSTOM' ? "bg-emerald-600 text-white" : "bg-zinc-800 text-zinc-400 hover:text-white"
+                "px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors cursor-pointer",
+                purseMode === 'CUSTOM' ? "bg-amber-600 text-white" : "bg-zinc-800 text-zinc-400 hover:text-white"
               )}
             >
               Custom Purse
             </button>
           </div>
 
-          {purseMode === 'PRESET' ? (
-            <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
-              {PRESET_PURSES.map(val => (
-                <button
-                  key={val}
-                  onClick={() => setPresetPurse(val)}
-                  className={cn(
-                    "py-3 rounded-xl text-sm font-bold transition-all cursor-pointer border",
-                    presetPurse === val
-                      ? "bg-emerald-600/20 border-emerald-500/50 text-emerald-400"
-                      : "bg-zinc-950 border-zinc-800 text-zinc-300 hover:border-zinc-700"
-                  )}
-                >
-                  {val} Cr
-                </button>
-              ))}
+          {purseMode === 'SAME' ? (
+            <div className="space-y-4">
+              <p className="text-sm text-zinc-400">Every squad receives the same starting budget.</p>
+
+              {!samePurseCustom ? (
+                <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
+                  {PRESET_PURSES.map(val => (
+                    <button
+                      key={val}
+                      onClick={() => setSamePurseValue(val)}
+                      className={cn(
+                        "py-3 rounded-xl text-sm font-bold transition-all cursor-pointer border",
+                        samePurseValue === val
+                          ? "bg-emerald-600/20 border-emerald-500/50 text-emerald-400"
+                          : "bg-zinc-950 border-zinc-800 text-zinc-300 hover:border-zinc-700"
+                      )}
+                    >
+                      {val} Cr
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <input
+                    type="number"
+                    value={samePurseCustomInput}
+                    onChange={(e) => setSamePurseCustomInput(e.target.value)}
+                    min="1"
+                    max="9999.9"
+                    step="0.1"
+                    placeholder="Enter amount..."
+                    className="flex-1 bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white text-lg font-bold focus:outline-none focus:border-emerald-500 transition-colors"
+                  />
+                  <span className="text-zinc-400 font-medium">Cr</span>
+                </div>
+              )}
+
+              <button
+                onClick={() => setSamePurseCustom(!samePurseCustom)}
+                className="text-xs text-zinc-500 hover:text-emerald-400 transition-colors cursor-pointer"
+              >
+                {samePurseCustom ? '← Use preset values' : 'Enter custom amount →'}
+              </button>
+
+              <p className="text-xs text-zinc-500">
+                Each squad starts with <span className="text-emerald-400 font-semibold">{getStartingBudget()} Cr</span>
+              </p>
             </div>
           ) : (
-            <div className="flex items-center gap-3">
-              <div className="relative flex-1">
-                <input
-                  type="number"
-                  value={customPurseInput}
-                  onChange={(e) => setCustomPurseInput(e.target.value)}
-                  min="1"
-                  max="9999.9"
-                  step="0.1"
-                  placeholder="Enter custom purse..."
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white text-lg font-bold focus:outline-none focus:border-emerald-500 transition-colors"
-                />
+            <div className="space-y-3">
+              <div className="bg-amber-950/20 border border-amber-500/20 rounded-xl p-4">
+                <p className="text-amber-400 text-sm font-medium mb-1">Custom Purse Enabled</p>
+                <p className="text-zinc-400 text-xs">Each squad will choose their own starting purse after joining the room. The auction cannot start until all squads have confirmed.</p>
               </div>
-              <span className="text-zinc-400 font-medium">Cr</span>
             </div>
           )}
-
-          <p className="text-xs text-zinc-500 mt-3">
-            Each squad starts with <span className="text-emerald-400 font-semibold">{displayBudget > 0 ? `${displayBudget} Cr` : '—'}</span>
-          </p>
         </section>
 
         {/* Section C: Rules */}
@@ -255,13 +272,17 @@ export default function CreateRoom() {
               <span className="text-white font-medium">{form.participantLimit} Max</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-zinc-400">Starting Purse</span>
-              <span className="text-emerald-400 font-medium">{displayBudget > 0 ? `${displayBudget} Cr` : '—'}</span>
-            </div>
-            <div className="flex justify-between">
               <span className="text-zinc-400">Purse Mode</span>
-              <span className="text-white font-medium capitalize">{purseMode.toLowerCase()}</span>
+              <span className={cn("font-medium", purseMode === 'CUSTOM' ? "text-amber-400" : "text-white")}>
+                {purseMode === 'SAME' ? 'Same for All' : 'Per-Squad Custom'}
+              </span>
             </div>
+            {purseMode === 'SAME' && (
+              <div className="flex justify-between">
+                <span className="text-zinc-400">Starting Purse</span>
+                <span className="text-emerald-400 font-medium">{getStartingBudget()} Cr</span>
+              </div>
+            )}
             <div className="flex justify-between">
               <span className="text-zinc-400">Min Bid</span>
               <span className="text-white font-medium">{form.minBid} Cr</span>

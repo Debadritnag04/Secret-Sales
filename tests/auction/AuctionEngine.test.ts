@@ -20,14 +20,15 @@ const createMockRoom = (): RoomData => ({
     maxParticipants: 12,
     minBid: 1,
     allowHostForceReveal: true,
+    purseMode: 'SAME',
   },
   participants: new Map([
     ['part_host', { id: 'part_host', name: 'Host', squadId: 'sq_host', squadName: 'Host Squad', isHost: true, sessionToken: 'tok_h', isConnected: true, joinedAt: 0, lastSeenAt: 0 }],
     ['part_guest', { id: 'part_guest', name: 'Guest', squadId: 'sq_guest', squadName: 'Guest Squad', isHost: false, sessionToken: 'tok_g', isConnected: true, joinedAt: 0, lastSeenAt: 0 }],
   ]),
   squads: new Map([
-    ['sq_host', { id: 'sq_host', participantId: 'part_host', ownerName: 'Host', squadName: 'Host Squad', budget: 200, startingBudget: 200, spent: 0, isReady: true, roster: [] }],
-    ['sq_guest', { id: 'sq_guest', participantId: 'part_guest', ownerName: 'Guest', squadName: 'Guest Squad', budget: 200, startingBudget: 200, spent: 0, isReady: true, roster: [] }],
+    ['sq_host', { id: 'sq_host', participantId: 'part_host', ownerName: 'Host', squadName: 'Host Squad', budget: 200, startingBudget: 200, spent: 0, isReady: true, purseConfirmed: true, roster: [] }],
+    ['sq_guest', { id: 'sq_guest', participantId: 'part_guest', ownerName: 'Guest', squadName: 'Guest Squad', budget: 200, startingBudget: 200, spent: 0, isReady: true, purseConfirmed: true, roster: [] }],
   ]),
   playerPool: [...mockPlayers],
   auctionState: {

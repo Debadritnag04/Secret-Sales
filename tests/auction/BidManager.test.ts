@@ -24,6 +24,7 @@ const settings: RoomSettings = {
   maxParticipants: 12,
   minBid: 1,
   allowHostForceReveal: true,
+    purseMode: 'SAME',
 };
 
 const createMockAuctionState = (phase: AuctionState['phase'] = 'BIDDING'): AuctionState => ({
@@ -62,8 +63,7 @@ describe('BidManager', () => {
     budget: 150,
     startingBudget: 200,
     spent: 50,
-    isReady: true,
-    roster: [],
+    isReady: true, purseConfirmed: true, roster: [],
   };
 
   it('should accept valid bids within budget and above base price', () => {

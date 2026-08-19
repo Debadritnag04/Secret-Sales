@@ -12,7 +12,7 @@ describe('Multi-Room Isolation Test', () => {
   it('should run Room A (12 players), Room B (10 players), and Room C (9 players) concurrently with zero state leakage', async () => {
     // 1. Setup Room A (12 players)
     const hostA = RoomManager.createRoom(
-      { auctionName: 'Room A League', startingBudget: 200, minParticipants: 9, maxParticipants: 12, minBid: 1, allowHostForceReveal: true },
+      { auctionName: 'Room A League', startingBudget: 200, minParticipants: 9, maxParticipants: 12, minBid: 1, allowHostForceReveal: true, purseMode: 'SAME' },
       'HostA',
       INITIAL_PLAYER_POOL,
       'A_Squad_1'
@@ -24,7 +24,7 @@ describe('Multi-Room Isolation Test', () => {
 
     // 2. Setup Room B (10 players)
     const hostB = RoomManager.createRoom(
-      { auctionName: 'Room B League', startingBudget: 300, minParticipants: 9, maxParticipants: 12, minBid: 1, allowHostForceReveal: true },
+      { auctionName: 'Room B League', startingBudget: 300, minParticipants: 9, maxParticipants: 12, minBid: 1, allowHostForceReveal: true, purseMode: 'SAME' },
       'HostB',
       INITIAL_PLAYER_POOL,
       'B_Squad_1'
@@ -36,7 +36,7 @@ describe('Multi-Room Isolation Test', () => {
 
     // 3. Setup Room C (9 players)
     const hostC = RoomManager.createRoom(
-      { auctionName: 'Room C League', startingBudget: 150, minParticipants: 9, maxParticipants: 12, minBid: 1, allowHostForceReveal: true },
+      { auctionName: 'Room C League', startingBudget: 150, minParticipants: 9, maxParticipants: 12, minBid: 1, allowHostForceReveal: true, purseMode: 'SAME' },
       'HostC',
       INITIAL_PLAYER_POOL,
       'C_Squad_1'

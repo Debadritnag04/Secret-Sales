@@ -200,6 +200,7 @@ export class SupabaseRoomRepository implements IRoomRepository {
         maxParticipants: row.max_participants,
         minBid: Number(row.min_bid),
         allowHostForceReveal: true,
+        purseMode: row.purse_mode || 'SAME',
       },
       participants: new Map(),
       squads: new Map(),
@@ -281,6 +282,7 @@ export class SupabaseTeamRepository implements ITeamRepository {
       startingBudget: Number(s.starting_budget),
       spent: Number(s.total_spent),
       isReady: s.is_ready,
+      purseConfirmed: true,
       roster: [],
     }));
   }

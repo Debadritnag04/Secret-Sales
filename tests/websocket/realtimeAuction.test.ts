@@ -29,6 +29,7 @@ describe('Real-Time WebSocket Auction Flow', () => {
       maxParticipants: 12,
       minBid: 1,
       allowHostForceReveal: true,
+    purseMode: 'SAME',
     });
 
     const guest1 = await defaultRoomService.joinRoom(created.roomCode, {

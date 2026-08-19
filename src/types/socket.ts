@@ -9,6 +9,7 @@ export interface ClientToServerEvents {
   'room:leave': () => void;
   'room:ready': () => void;
   'room:unready': () => void;
+  'room:confirm_purse': (data: { amount: number }, callback?: (res: any) => void) => void;
   'auction:start': () => void;
   'auction:submit_bid': (data: { bidAmount: number }, callback?: (res: any) => void) => void;
   'auction:force_reveal': () => void;

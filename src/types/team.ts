@@ -16,6 +16,7 @@ export interface Squad {
   startingBudget: number;
   spent: number;
   isReady: boolean;
+  purseConfirmed: boolean;
   roster: PlayerPurchase[];
 }
 

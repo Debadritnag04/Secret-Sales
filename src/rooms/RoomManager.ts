@@ -122,10 +122,11 @@ export class RoomManager {
       participantId,
       ownerName: participantName,
       squadName: squadName.trim(),
-      budget: room.settings.startingBudget,
-      startingBudget: room.settings.startingBudget,
+      budget: room.settings.purseMode === 'CUSTOM' ? 0 : room.settings.startingBudget,
+      startingBudget: room.settings.purseMode === 'CUSTOM' ? 0 : room.settings.startingBudget,
       spent: 0,
       isReady: false,
+      purseConfirmed: room.settings.purseMode === 'SAME', // Auto-confirmed in SAME mode
       roster: [],
     };
 
@@ -222,6 +223,64 @@ export class RoomManager {
     if (squad) {
       squad.isReady = isReady;
     }
+  }
+
+  /**
+   * Confirms a squad's custom starting purse.
+   * Only valid in CUSTOM purse mode and before auction starts.
+   */
+  static confirmPurse(roomCode: string, participantId: string, amount: number): void {
+    const room = this.getRoom(roomCode);
+    if (!room) throw createError('ROOM_NOT_FOUND', 'Room not found');
+
+    if (room.settings.purseMode !== 'CUSTOM') {
+      throw createError('VALIDATION_ERROR', 'Custom purse is not enabled for this room');
+    }
+
+    if (room.auctionState.phase !== 'LOBBY' && room.auctionState.phase !== 'WAITING') {
+      throw createError('INVALID_PHASE', 'Cannot change purse after auction has started');
+    }
+
+    const participant = room.participants.get(participantId);
+    if (!participant) throw createError('PARTICIPANT_NOT_FOUND', 'Participant not found');
+
+    const squad = room.squads.get(participant.squadId);
+    if (!squad) throw createError('SQUAD_NOT_FOUND', 'Squad not found');
+
+    // Validate amount
+    if (typeof amount !== 'number' || isNaN(amount) || amount <= 0) {
+      throw createError('VALIDATION_ERROR', 'Purse must be greater than 0');
+    }
+    if (amount > 9999.9) {
+      throw createError('VALIDATION_ERROR', 'Purse cannot exceed 9999.9 Cr');
+    }
+    const decimalPart = amount.toString().split('.')[1];
+    if (decimalPart && decimalPart.length > 1) {
+      throw createError('VALIDATION_ERROR', 'Purse can have at most 1 decimal place');
+    }
+
+    squad.startingBudget = amount;
+    squad.budget = amount;
+    squad.purseConfirmed = true;
+    room.updatedAt = Date.now();
+
+    logger.info(
+      { roomCode, participantId, squadName: squad.squadName, purse: amount },
+      `[RoomManager] Purse confirmed: ${squad.squadName} → ${amount} Cr`
+    );
+  }
+
+  /**
+   * Checks if all squads have confirmed their purse (for CUSTOM mode)
+   */
+  static allPursesConfirmed(roomCode: string): boolean {
+    const room = this.getRoom(roomCode);
+    if (!room) return false;
+    if (room.settings.purseMode === 'SAME') return true;
+    for (const squad of room.squads.values()) {
+      if (!squad.purseConfirmed) return false;
+    }
+    return true;
   }
 
   /**
