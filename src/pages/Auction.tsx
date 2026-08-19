@@ -31,7 +31,7 @@ export default function Auction() {
   // If still in lobby, go back to lobby
   if (room.phase === 'LOBBY' || room.phase === 'WAITING') return <Navigate to="/lobby" />;
 
-  const isHost = credentials?.isHost ?? false;
+  const isHost = credentials?.isHost ?? room.isHost ?? false;
   const currentPlayer = room.currentPlayer;
   const currentRound = room.currentRound;
   const submittedCount = room.submittedCount ?? 0;
@@ -393,7 +393,19 @@ export default function Auction() {
                   )
                 ) : (
                   <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 text-center text-zinc-400">
-                    {isHost ? 'Review results and click Next Player to continue.' : 'Waiting for host to proceed.'}
+                    {isHost ? (
+                      <div className="space-y-3">
+                        <p>Review results and click Next Player to continue.</p>
+                        <button
+                          onClick={() => nextPlayer()}
+                          className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-semibold transition-colors inline-flex items-center gap-2 cursor-pointer"
+                        >
+                          Next Player <ArrowRight className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      'Waiting for host to proceed.'
+                    )}
                   </div>
                 )}
               </div>
