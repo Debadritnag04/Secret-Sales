@@ -34,12 +34,13 @@ export default function Auction() {
   const currentPlayer = room.currentPlayer;
   const currentRound = room.currentRound;
   const submittedCount = room.submittedCount ?? 0;
-  const totalParticipants = room.totalParticipants ?? room.participants.length;
+  const totalParticipants = room.totalParticipants ?? (room.participants || []).length;
   const phase = room.phase; // BIDDING, REVEALING, STARTING, etc.
   const myBidStatus = room.myBidStatus; // 'NONE' | 'SUBMITTED'
   const myBudget = room.myBudget ?? 0;
   const lastReveal = room.lastRevealResult;
   const minBid = room.settings?.minBid ?? 1;
+  const squads = room.squads || [];
 
   const isBidding = phase === 'BIDDING' || phase === 'STARTING';
   const isRevealing = phase === 'REVEALING';
@@ -99,7 +100,7 @@ export default function Auction() {
         {/* Left Panel: All Squads */}
         <div className="w-full md:w-64 lg:w-80 border-b md:border-b-0 md:border-r border-zinc-800 bg-zinc-950/50 p-4 overflow-y-auto shrink-0 flex flex-row md:flex-col gap-3">
           <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-2 hidden md:block">Room Standings</h3>
-          {room.squads.map(squad => (
+          {squads.map(squad => (
             <div key={squad.id} className="flex items-center justify-between p-3 rounded-xl bg-zinc-900 border border-zinc-800 min-w-[200px] md:min-w-0">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center text-sm font-bold text-emerald-400">

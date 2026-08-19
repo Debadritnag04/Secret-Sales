@@ -25,13 +25,13 @@ export default function Results() {
     return <Navigate to="/auction" />;
   }
 
-  const sortedSquads = [...room.squads].sort((a, b) => {
+  const sortedSquads = [...(room.squads || [])].sort((a, b) => {
     // Sort by player count (proxy for value), then by budget remaining
     if (b.playerCount !== a.playerCount) return b.playerCount - a.playerCount;
     return b.budget - a.budget;
   });
 
-  const bestBudget = [...room.squads].sort((a, b) => b.budget - a.budget)[0];
+  const bestBudget = [...(room.squads || [])].sort((a, b) => b.budget - a.budget)[0];
 
   const handleGoHome = () => {
     leaveRoom();

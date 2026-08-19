@@ -228,8 +228,6 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     // Participant joined
     newSocket.on('room:participant_joined', (data: any) => {
       toast.success(`${data.name} (${data.squadName}) joined the room`);
-      // Request fresh state
-      newSocket.emit('room:join', {}, () => {});
     });
 
     // Participant left
@@ -237,20 +235,20 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       toast.info(`${data.name} left the room`);
     });
 
-    // Participant updated (ready/connected status)
+    // Participant updated (ready/connected status) — state comes via room:state
     newSocket.on('room:participant_updated', (_data: any) => {
-      // Request fresh state to get accurate participant list
-      newSocket.emit('room:join', {}, () => {});
+      // The server's broadcastStateUpdates will push room:state shortly
     });
 
-    // Auction started
-    newSocket.on('auction:started', (_data: any) => {
+    // Auction started — update phase immediately
+    newSocket.on('auction:started', (data: any) => {
       toast.success('Auction has started!');
+      setRoom(prev => prev ? { ...prev, phase: 'BIDDING', currentRound: data.round, currentPlayer: data.player } : null);
     });
 
-    // Auction player announced
-    newSocket.on('auction:player', (_data: any) => {
-      // State will be updated via room:state
+    // Auction player announced — update immediately
+    newSocket.on('auction:player', (data: any) => {
+      setRoom(prev => prev ? { ...prev, phase: 'BIDDING', currentRound: data.round, currentPlayer: data.player, submittedCount: 0, myBidStatus: 'NONE' } : null);
     });
 
     // Bid acknowledgement
@@ -276,16 +274,17 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       toast.info('Revealing bids...');
     });
 
-    // Reveal result
+    // Reveal result — update immediately without waiting for room:state
     newSocket.on('auction:revealed', (data: any) => {
       setRoom(prev => prev ? { ...prev, lastRevealResult: data, phase: 'REVEALING' } : null);
     });
 
-    // Winner announced
+    // Winner announced — update immediately
     newSocket.on('auction:winner', (data: any) => {
       if (data.winnerSquadName) {
         toast.success(`${data.winnerSquadName} wins for ${data.winningBid}!`);
       }
+      setRoom(prev => prev ? { ...prev, lastRevealResult: data, phase: 'REVEALING' } : null);
     });
 
     // Budget updated
@@ -298,9 +297,9 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       // Will be reflected in next room:state
     });
 
-    // Next player
-    newSocket.on('auction:next_player', (_data: any) => {
-      // State will be updated via room:state
+    // Next player — update immediately
+    newSocket.on('auction:next_player', (data: any) => {
+      setRoom(prev => prev ? { ...prev, phase: 'BIDDING', currentRound: data.round, currentPlayer: data.player, submittedCount: 0, myBidStatus: 'NONE', lastRevealResult: null } : null);
     });
 
     // Auction completed

@@ -12,7 +12,7 @@ export default function Standings() {
   if (!room && !credentials) return <Navigate to="/" />;
   if (!room) return null;
 
-  const sortedSquads = [...room.squads].sort((a, b) => {
+  const sortedSquads = [...(room.squads || [])].sort((a, b) => {
     switch (sort) {
       case 'budget': return b.budget - a.budget;
       case 'spent': return b.spent - a.spent;

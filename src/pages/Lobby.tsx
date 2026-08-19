@@ -31,9 +31,11 @@ export default function Lobby() {
   }
 
   const isHost = credentials?.isHost ?? false;
-  const readyCount = room.participants.filter(p => p.isReady).length;
-  const totalCount = room.participants.length;
-  const maxParticipants = room.settings.maxParticipants;
+  const participants = room.participants || [];
+  const squads = room.squads || [];
+  const readyCount = participants.filter(p => p.isReady).length;
+  const totalCount = participants.length;
+  const maxParticipants = room.settings?.maxParticipants ?? 12;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(room.roomCode);
@@ -48,7 +50,7 @@ export default function Lobby() {
     navigate('/');
   };
 
-  const mySquad = room.squads.find(s => s.id === credentials?.squadId);
+  const mySquad = squads.find(s => s.id === credentials?.squadId);
 
   return (
     <div className="max-w-6xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -72,7 +74,7 @@ export default function Lobby() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <AnimatePresence mode="popLayout">
-          {room.squads.map(squad => (
+          {squads.map(squad => (
             <motion.div 
               key={squad.id}
               layout
@@ -101,12 +103,12 @@ export default function Lobby() {
                     {squad.isReady ? 'Ready' : 'Waiting'}
                   </span>
                 </div>
-                {room.participants.find(p => p.squadName === squad.squadName)?.isHost && (
+                {participants.find(p => p.squadName === squad.squadName)?.isHost && (
                   <Shield className="w-4 h-4 text-emerald-500" />
                 )}
               </div>
 
-              {isHost && !room.participants.find(p => p.squadName === squad.squadName)?.isHost && (
+              {isHost && !participants.find(p => p.squadName === squad.squadName)?.isHost && (
                 <button 
                   onClick={() => kickSquad(squad.id)}
                   className="absolute top-2 right-2 p-1.5 bg-red-500/10 text-red-400 rounded-lg opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
