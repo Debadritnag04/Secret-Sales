@@ -222,6 +222,32 @@ export function registerSocketEvents(
     }
   });
 
+  // 9. Recall Unsold Player (Host only)
+  socket.on('auction:recall_player', async (data: any, callback?: any) => {
+    const playerId = data?.playerId;
+    if (!playerId) {
+      socket.emit('error', { code: 'VALIDATION_ERROR', message: 'playerId is required' });
+      if (callback) callback({ status: 'error', message: 'playerId is required' });
+      return;
+    }
+
+    try {
+      const result = await defaultAuctionService.recallPlayer(roomCode, participantId, playerId);
+
+      // Broadcast to all clients
+      io.to(socketRoomKey).emit('auction:player_recalled', {
+        player: result.player,
+        newSequencePosition: result.newSequencePosition,
+      });
+
+      broadcastStateUpdates(io, roomCode);
+      if (callback) callback({ status: 'ok' });
+    } catch (err: any) {
+      socket.emit('error', { code: err.code || 'RECALL_FAILED', message: err.message });
+      if (callback) callback({ status: 'error', message: err.message });
+    }
+  });
+
   // 9. Leave Room
   socket.on('room:leave', () => {
     socket.leave(socketRoomKey);
@@ -258,26 +284,38 @@ function handleRevealBroadcast(
   io.to(socketRoomKey).emit('auction:reveal_started');
   io.to(socketRoomKey).emit('auction:revealed', revealResult);
 
-  io.to(socketRoomKey).emit('auction:winner', {
-    round: revealResult.round,
-    player: revealResult.player,
-    winnerSquadId: revealResult.winnerSquadId,
-    winnerSquadName: revealResult.winnerSquadName,
-    winningBid: revealResult.winningBid,
-    tieBreak: revealResult.tieBreak,
-  });
+  if (revealResult.isUnsold) {
+    // Player is unsold — broadcast unsold event
+    const room = RoomManager.getRoom(roomCode);
+    const unsoldCount = room ? (room.auctionState.unsoldPlayers || []).filter((u: any) => !u.recalled).length : 0;
 
-  if (updatedSquad && purchase) {
-    io.to(socketRoomKey).emit('budget:updated', {
-      squadId: updatedSquad.id,
-      budget: updatedSquad.budget,
-      spent: updatedSquad.spent,
+    io.to(socketRoomKey).emit('auction:player_unsold', {
+      player: revealResult.player,
+      round: revealResult.round,
+      unsoldCount,
+    });
+  } else if (revealResult.winnerSquadId) {
+    io.to(socketRoomKey).emit('auction:winner', {
+      round: revealResult.round,
+      player: revealResult.player,
+      winnerSquadId: revealResult.winnerSquadId,
+      winnerSquadName: revealResult.winnerSquadName,
+      winningBid: revealResult.winningBid,
+      tieBreak: revealResult.tieBreak,
     });
 
-    io.to(socketRoomKey).emit('roster:updated', {
-      squadId: updatedSquad.id,
-      purchase,
-    });
+    if (updatedSquad && purchase) {
+      io.to(socketRoomKey).emit('budget:updated', {
+        squadId: updatedSquad.id,
+        budget: updatedSquad.budget,
+        spent: updatedSquad.spent,
+      });
+
+      io.to(socketRoomKey).emit('roster:updated', {
+        squadId: updatedSquad.id,
+        purchase,
+      });
+    }
   }
 
   broadcastStateUpdates(io, roomCode);

@@ -51,16 +51,7 @@ export class WinnerResolver {
           invalidReason: `Bid ${b.amount} exceeds remaining budget of ${squad.budget}`,
         };
       }
-      if (b.amount < player.basePrice) {
-        return {
-          participantId: b.participantId,
-          squadId: b.squadId,
-          squadName: b.squadName,
-          amount: b.amount,
-          isValid: false,
-          invalidReason: `Bid ${b.amount} is below player base price of ${player.basePrice}`,
-        };
-      }
+      // A bid of 0 is valid — it means "pass" / "I don't want this player"
       return {
         participantId: b.participantId,
         squadId: b.squadId,
@@ -72,8 +63,11 @@ export class WinnerResolver {
 
     const validBids = evaluatedBids.filter((b) => b.isValid);
 
-    if (validBids.length === 0) {
-      logger.info({ round, playerId: player.id }, '[Auction] Round ended with no valid bids');
+    // If no valid bids at all, or ALL valid bids are 0 → UNSOLD
+    const nonZeroValidBids = validBids.filter((b) => b.amount > 0);
+
+    if (validBids.length === 0 || nonZeroValidBids.length === 0) {
+      logger.info({ round, playerId: player.id }, '[Auction] Round ended with no non-zero bids — player UNSOLD');
       return {
         round,
         player,
@@ -83,19 +77,20 @@ export class WinnerResolver {
         winnerSquadName: null,
         winningBid: 0,
         tieBreak: null,
+        isUnsold: true,
         timestamp: Date.now(),
       };
     }
 
-    // Find highest bid amount
+    // Find highest non-zero bid amount
     let highestAmount = -1;
-    for (const b of validBids) {
+    for (const b of nonZeroValidBids) {
       if (b.amount > highestAmount) {
         highestAmount = b.amount;
       }
     }
 
-    const topBids = validBids.filter((b) => b.amount === highestAmount);
+    const topBids = nonZeroValidBids.filter((b) => b.amount === highestAmount);
 
     let winningBidEntry: EvaluatedBid;
     let tieBreak: TieBreakResult | null = null;
@@ -131,6 +126,7 @@ export class WinnerResolver {
       winnerSquadName: winningBidEntry.squadName,
       winningBid: winningBidEntry.amount,
       tieBreak,
+      isUnsold: false,
       timestamp: Date.now(),
     };
   }

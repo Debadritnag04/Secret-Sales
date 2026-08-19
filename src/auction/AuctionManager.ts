@@ -102,4 +102,23 @@ export class AuctionManager {
       return AuctionEngine.advanceToNextPlayer(room);
     });
   }
+
+  /**
+   * Recalls an unsold player back into the auction queue.
+   * Only the host can initiate a recall.
+   */
+  static async recallPlayer(
+    room: RoomData,
+    requesterId: string,
+    playerId: string
+  ): Promise<{ player: any; newSequencePosition: number }> {
+    return RoomMutexManager.runExclusive(room.id, async () => {
+      const participant = room.participants.get(requesterId);
+      if (!participant || !participant.isHost) {
+        throw createError('NOT_HOST', 'Only the room host can recall unsold players');
+      }
+
+      return AuctionEngine.recallPlayer(room, playerId);
+    });
+  }
 }

@@ -41,8 +41,13 @@ export class BidManager {
       return { valid: false, code: 'BID_ALREADY_SUBMITTED', message: 'You have already submitted a bid for this player' };
     }
 
-    if (typeof bidAmount !== 'number' || isNaN(bidAmount) || !isFinite(bidAmount) || bidAmount <= 0) {
-      return { valid: false, code: 'INVALID_BID_AMOUNT', message: 'Bid amount must be a positive number' };
+    if (typeof bidAmount !== 'number' || isNaN(bidAmount) || !isFinite(bidAmount) || bidAmount < 0) {
+      return { valid: false, code: 'INVALID_BID_AMOUNT', message: 'Bid amount must be a non-negative number' };
+    }
+
+    // A bid of 0 is always valid — it means "I do not want this player"
+    if (bidAmount === 0) {
+      return { valid: true };
     }
 
     const minRequiredBid = Math.max(settings.minBid, auctionState.currentPlayer.basePrice || 1);

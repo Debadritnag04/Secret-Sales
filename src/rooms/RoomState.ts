@@ -66,6 +66,7 @@ export class RoomStateFactory {
         playerSequence: [],
         currentPlayerIndex: 0,
         history: [],
+        unsoldPlayers: [],
       },
       createdAt: Date.now(),
       updatedAt: Date.now(),

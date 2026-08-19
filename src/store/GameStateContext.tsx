@@ -59,6 +59,8 @@ export interface RoomState {
   squads: SquadInfo[];
   settings: RoomSettings;
   lastRevealResult: any;
+  unsoldPlayers?: { player: PlayerInfo; originalRound: number }[];
+  unsoldCount?: number;
   // Private fields (when authenticated)
   myParticipantId?: string;
   mySquadId?: string;
@@ -95,6 +97,7 @@ interface GameContextType {
   nextPlayer: () => void;
   endAuction: () => void;
   kickSquad: (squadId: string) => void;
+  recallPlayer: (playerId: string) => void;
   restoreSession: () => Promise<boolean>;
 }
 
@@ -287,6 +290,26 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       setRoom(prev => prev ? { ...prev, lastRevealResult: data, phase: 'REVEALING' } : null);
     });
 
+    // Player unsold — all bids were 0
+    newSocket.on('auction:player_unsold', (data: any) => {
+      toast.info(`${data.player?.name || 'Player'} goes UNSOLD`);
+      setRoom(prev => {
+        if (!prev) return null;
+        const newUnsold = [...(prev.unsoldPlayers || []), { player: data.player, originalRound: data.round }];
+        return { ...prev, unsoldPlayers: newUnsold, unsoldCount: newUnsold.length, phase: 'REVEALING' };
+      });
+    });
+
+    // Player recalled by host
+    newSocket.on('auction:player_recalled', (data: any) => {
+      toast.info(`${data.player?.name || 'Player'} has been recalled into the auction`);
+      setRoom(prev => {
+        if (!prev) return null;
+        const filtered = (prev.unsoldPlayers || []).filter(u => u.player.id !== data.player?.id);
+        return { ...prev, unsoldPlayers: filtered, unsoldCount: filtered.length };
+      });
+    });
+
     // Budget updated
     newSocket.on('budget:updated', (_data: any) => {
       // Will be reflected in next room:state
@@ -469,6 +492,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
 
   const submitBid = useCallback((amount: number) => {
     if (!socketRef.current || !room || room.phase !== 'BIDDING') return;
+    if (typeof amount !== 'number' || isNaN(amount) || amount < 0) return;
     socketRef.current.emit('auction:submit_bid', { bidAmount: amount });
   }, [room]);
 
@@ -500,6 +524,13 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     toast.error('Kick is not yet implemented on the server');
   }, []);
 
+  // ─── Recall Player (Host only) ──────────────────────────────────────────
+
+  const recallPlayer = useCallback((playerId: string) => {
+    if (!socketRef.current || !credentials?.isHost) return;
+    socketRef.current.emit('auction:recall_player', { playerId });
+  }, [credentials]);
+
   // ─── Auto-restore session on mount ───────────────────────────────────────
 
   useEffect(() => {
@@ -528,6 +559,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       nextPlayer,
       endAuction,
       kickSquad,
+      recallPlayer,
       restoreSession,
     }}>
       {children}

@@ -34,6 +34,7 @@ export interface RevealResult {
   winnerSquadName: string | null;
   winningBid: number;
   tieBreak: TieBreakResult | null;
+  isUnsold: boolean;
   timestamp: number;
 }
 
@@ -52,6 +53,15 @@ export interface RoundHistory {
   timestamp: number;
 }
 
+export interface UnsoldPlayerRecord {
+  player: Player;
+  originalRound: number;
+  markedUnsoldAt: number;
+  recalled: boolean;
+  recalledAt?: number;
+  recalledRound?: number;
+}
+
 export interface AuctionState {
   currentRound: number;
   phase: AuctionPhase;
@@ -62,4 +72,5 @@ export interface AuctionState {
   playerSequence: string[]; // Ordered Player IDs for this auction
   currentPlayerIndex: number;
   history: RoundHistory[];
+  unsoldPlayers: UnsoldPlayerRecord[];
 }

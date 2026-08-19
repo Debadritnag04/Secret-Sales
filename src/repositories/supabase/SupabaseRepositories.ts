@@ -204,6 +204,7 @@ export class SupabaseRoomRepository implements IRoomRepository {
         playerSequence: [],
         currentPlayerIndex: 0,
         history: [],
+        unsoldPlayers: [],
       },
       createdAt: new Date(row.created_at).getTime(),
       updatedAt: new Date(row.updated_at || row.created_at).getTime(),

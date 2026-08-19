@@ -40,6 +40,7 @@ const createMockRoom = (): RoomData => ({
     playerSequence: [],
     currentPlayerIndex: 0,
     history: [],
+    unsoldPlayers: [],
   },
   createdAt: Date.now(),
   updatedAt: Date.now(),

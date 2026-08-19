@@ -68,6 +68,11 @@ export interface PublicRoomState {
   }[];
   settings: RoomSettings;
   lastRevealResult: AuctionState['lastRevealResult'];
+  unsoldPlayers: {
+    player: Player;
+    originalRound: number;
+  }[];
+  unsoldCount: number;
 }
 
 export interface PrivateParticipantState extends PublicRoomState {

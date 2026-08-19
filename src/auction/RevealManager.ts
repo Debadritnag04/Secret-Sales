@@ -88,11 +88,19 @@ export class RevealManager {
         tieBreakUsed: !!revealResult.tieBreak,
       });
     } else {
-      // Unsold
+      // Unsold — all bids were 0 or no valid bids
       const poolPlayer = playerPool.find((p) => p.id === currentPlayer.id);
       if (poolPlayer) {
         poolPlayer.status = 'unsold';
       }
+
+      // Track in unsold players list
+      room.auctionState.unsoldPlayers.push({
+        player: currentPlayer,
+        originalRound: auctionState.currentRound,
+        markedUnsoldAt: Date.now(),
+        recalled: false,
+      });
     }
 
     // 4. Save round history

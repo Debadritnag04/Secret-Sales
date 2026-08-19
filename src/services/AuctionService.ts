@@ -87,6 +87,17 @@ export class AuctionService {
     AuctionEngine.endAuction(room);
     await this.repos.rooms.updateRoom(room);
   }
+
+  async recallPlayer(roomCode: string, requesterId: string, playerId: string): Promise<{ player: any; newSequencePosition: number }> {
+    const room = RoomManager.getRoom(roomCode);
+    if (!room) {
+      throw createError('ROOM_NOT_FOUND', `Room with code ${roomCode} not found`, 404);
+    }
+
+    const result = await AuctionManager.recallPlayer(room, requesterId, playerId);
+    await this.repos.rooms.updateRoom(room);
+    return result;
+  }
 }
 
 export const defaultAuctionService = new AuctionService();

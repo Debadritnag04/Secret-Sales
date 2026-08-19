@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useGame } from '../store/GameStateContext';
-import { Eye, CheckCircle2, DollarSign, Award, ArrowRight, SkipForward, StopCircle } from 'lucide-react';
+import { Eye, CheckCircle2, DollarSign, Award, ArrowRight, StopCircle, RotateCcw, Ban, ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function Auction() {
-  const { room, credentials, submitBid, forceReveal, nextPlayer, endAuction } = useGame();
+  const { room, credentials, submitBid, forceReveal, nextPlayer, endAuction, recallPlayer } = useGame();
   const [bidInput, setBidInput] = useState<string>('');
+  const [showUnsold, setShowUnsold] = useState(false);
 
   // Only redirect if there's genuinely no session at all
   if (!room && !credentials) return <Navigate to="/" />;
@@ -35,24 +36,28 @@ export default function Auction() {
   const currentRound = room.currentRound;
   const submittedCount = room.submittedCount ?? 0;
   const totalParticipants = room.totalParticipants ?? (room.participants || []).length;
-  const phase = room.phase; // BIDDING, REVEALING, STARTING, etc.
-  const myBidStatus = room.myBidStatus; // 'NONE' | 'SUBMITTED'
+  const phase = room.phase;
+  const myBidStatus = room.myBidStatus;
   const myBudget = room.myBudget ?? 0;
   const lastReveal = room.lastRevealResult;
   const minBid = room.settings?.minBid ?? 1;
   const squads = room.squads || [];
+  const unsoldPlayers = room.unsoldPlayers || [];
+  const unsoldCount = room.unsoldCount ?? unsoldPlayers.length;
 
   const isBidding = phase === 'BIDDING' || phase === 'STARTING';
   const isRevealing = phase === 'REVEALING';
-
-  // Derive waiting count
   const waitingCount = totalParticipants - submittedCount;
 
   const handleBid = () => {
     const amount = Number(bidInput);
-    if (!amount || isNaN(amount)) return;
+    if (isNaN(amount) || amount < 0) return;
     submitBid(amount);
     setBidInput('');
+  };
+
+  const handlePass = () => {
+    submitBid(0);
   };
 
   const presetBids = [minBid, minBid + 5, minBid + 10, minBid + 20].filter(v => v <= myBudget);
@@ -70,6 +75,15 @@ export default function Auction() {
               {isBidding ? 'Accepting Bids' : isRevealing ? 'Results Reveal' : phase}
             </span>
           </div>
+          {unsoldCount > 0 && (
+            <>
+              <div className="h-4 w-px bg-zinc-800" />
+              <div className="flex items-center gap-1.5 px-2 py-1 bg-red-500/10 border border-red-500/20 rounded-md">
+                <Ban className="w-3 h-3 text-red-400" />
+                <span className="text-xs font-semibold text-red-400">Unsold: {unsoldCount}</span>
+              </div>
+            </>
+          )}
         </div>
 
         {isHost && isBidding && (
@@ -97,11 +111,11 @@ export default function Auction() {
       </div>
 
       <div className="flex-1 overflow-hidden flex flex-col md:flex-row">
-        {/* Left Panel: All Squads */}
-        <div className="w-full md:w-64 lg:w-80 border-b md:border-b-0 md:border-r border-zinc-800 bg-zinc-950/50 p-4 overflow-y-auto shrink-0 flex flex-row md:flex-col gap-3">
-          <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-2 hidden md:block">Room Standings</h3>
+        {/* Left Panel: Squads + Unsold */}
+        <div className="w-full md:w-64 lg:w-80 border-b md:border-b-0 md:border-r border-zinc-800 bg-zinc-950/50 p-4 overflow-y-auto shrink-0 flex flex-col gap-3">
+          <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-1">Room Standings</h3>
           {squads.map(squad => (
-            <div key={squad.id} className="flex items-center justify-between p-3 rounded-xl bg-zinc-900 border border-zinc-800 min-w-[200px] md:min-w-0">
+            <div key={squad.id} className="flex items-center justify-between p-3 rounded-xl bg-zinc-900 border border-zinc-800">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center text-sm font-bold text-emerald-400">
                   {squad.squadName.charAt(0).toUpperCase()}
@@ -116,6 +130,60 @@ export default function Auction() {
               )}
             </div>
           ))}
+
+          {/* Unsold Players Panel */}
+          {unsoldCount > 0 && (
+            <div className="mt-4 border-t border-zinc-800 pt-4">
+              <button
+                onClick={() => setShowUnsold(!showUnsold)}
+                className="w-full flex items-center justify-between text-xs font-semibold text-red-400 uppercase tracking-wider mb-2 cursor-pointer hover:text-red-300 transition-colors"
+              >
+                <span className="flex items-center gap-1.5">
+                  <Ban className="w-3 h-3" />
+                  Unsold Players ({unsoldCount})
+                </span>
+                {showUnsold ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+              </button>
+
+              <AnimatePresence>
+                {showUnsold && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden space-y-2"
+                  >
+                    {unsoldPlayers.map((item) => (
+                      <div key={item.player.id} className="p-3 rounded-xl bg-red-950/10 border border-red-500/10">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className="w-7 h-7 rounded-md bg-zinc-800 flex items-center justify-center text-xs font-bold text-zinc-300">
+                              {item.player.rating}
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="text-xs font-medium text-white truncate max-w-[100px]">{item.player.name}</span>
+                              <span className="text-[10px] text-zinc-500">{item.player.position} • R{item.originalRound}</span>
+                            </div>
+                          </div>
+                          {isHost && (
+                            <button
+                              onClick={() => recallPlayer(item.player.id)}
+                              className="px-2 py-1 text-[10px] font-semibold bg-amber-600/20 hover:bg-amber-600/40 text-amber-400 rounded-md transition-colors flex items-center gap-1 cursor-pointer"
+                              title="Recall this player into the auction"
+                            >
+                              <RotateCcw className="w-2.5 h-2.5" />
+                              Recall
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
         </div>
 
         {/* Center: Main Stage */}
@@ -225,8 +293,14 @@ export default function Auction() {
                     </>
                   ) : (
                     <div className="py-12">
-                      <p className="text-2xl font-bold text-zinc-500">Unsold</p>
-                      <p className="text-zinc-600 mt-2">No valid bids were placed.</p>
+                      <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-500/10 border border-red-500/20 mb-4">
+                        <Ban className="w-8 h-8 text-red-400" />
+                      </div>
+                      <p className="text-2xl font-bold text-red-400">UNSOLD</p>
+                      <p className="text-zinc-500 mt-2">All bids were 0. Player added to unsold list.</p>
+                      {isHost && (
+                        <p className="text-xs text-zinc-600 mt-3">You can recall this player later from the sidebar.</p>
+                      )}
                     </div>
                   )}
                 </div>
@@ -270,6 +344,14 @@ export default function Auction() {
                   ) : (
                     <div className="space-y-3">
                       <div className="flex gap-2">
+                        {/* Pass button (bid 0) */}
+                        <button
+                          onClick={handlePass}
+                          className="py-2 px-3 bg-red-950/30 hover:bg-red-950/50 border border-red-500/20 rounded-lg text-sm font-medium text-red-400 transition-colors cursor-pointer"
+                          title="Submit 0 — pass on this player"
+                        >
+                          Pass
+                        </button>
                         {presetBids.map(val => (
                           <button
                             key={val}
@@ -288,17 +370,19 @@ export default function Auction() {
                             value={bidInput}
                             onChange={(e) => setBidInput(e.target.value)}
                             placeholder="Enter bid amount..."
+                            min="0"
                             className="w-full bg-zinc-900 border border-zinc-800 rounded-xl pl-11 pr-4 py-4 text-white text-lg font-bold focus:outline-none focus:border-emerald-500 transition-colors placeholder:text-zinc-600 placeholder:font-normal"
                           />
                         </div>
                         <button
                           onClick={handleBid}
-                          disabled={!bidInput || Number(bidInput) < minBid || Number(bidInput) > myBudget}
+                          disabled={bidInput === '' || Number(bidInput) < 0 || Number(bidInput) > myBudget}
                           className="px-8 bg-emerald-600 hover:bg-emerald-500 disabled:bg-zinc-800 disabled:text-zinc-500 text-white rounded-xl font-bold text-lg transition-all cursor-pointer"
                         >
                           Submit
                         </button>
                       </div>
+                      <p className="text-[10px] text-zinc-600 text-center">Bid 0 = pass. If all managers pass, player goes unsold.</p>
                     </div>
                   )
                 ) : (

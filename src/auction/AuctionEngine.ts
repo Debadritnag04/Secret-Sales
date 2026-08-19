@@ -1,5 +1,6 @@
 import { RoomData, PublicRoomState, PrivateParticipantState } from '../types/room.js';
 import { AuctionPhase, RevealResult } from '../types/auction.js';
+import { Player } from '../types/player.js';
 import { PlayerSelector } from './PlayerSelector.js';
 import { RevealManager, RevealOutcome } from './RevealManager.js';
 import { RosterManager } from './RosterManager.js';
@@ -59,6 +60,7 @@ export class AuctionEngine {
     room.auctionState.currentPlayerIndex = 0;
     room.auctionState.currentRound = 0;
     room.auctionState.history = [];
+    room.auctionState.unsoldPlayers = [];
 
     // Advance to first player
     this.advanceToNextPlayer(room);
@@ -149,6 +151,65 @@ export class AuctionEngine {
   }
 
   /**
+   * Recalls an unsold player back into the auction queue.
+   * Creates a NEW round for the recalled player (does not reuse old round).
+   * Only the host can initiate a recall.
+   * The recalled player is placed at the END of the remaining sequence.
+   */
+  static recallPlayer(room: RoomData, playerId: string): { player: Player; newSequencePosition: number } {
+    const { auctionState } = room;
+
+    // Find the unsold record
+    const unsoldRecord = auctionState.unsoldPlayers.find(
+      (u) => u.player.id === playerId && !u.recalled
+    );
+
+    if (!unsoldRecord) {
+      throw createError('PLAYER_NOT_UNSOLD', 'Player is not in the unsold list or has already been recalled');
+    }
+
+    // Validate auction is active (BIDDING or REVEALING phase)
+    if (auctionState.phase !== 'BIDDING' && auctionState.phase !== 'REVEALING') {
+      throw createError(
+        'INVALID_PHASE',
+        `Cannot recall players in phase ${auctionState.phase}. Auction must be active.`
+      );
+    }
+
+    // Mark as recalled
+    unsoldRecord.recalled = true;
+    unsoldRecord.recalledAt = Date.now();
+
+    // Add player back to the end of the sequence
+    auctionState.playerSequence.push(playerId);
+
+    // Reset player status in pool to available
+    const poolPlayer = room.playerPool.find((p) => p.id === playerId);
+    if (poolPlayer) {
+      poolPlayer.status = 'available';
+    }
+
+    const newSequencePosition = auctionState.playerSequence.length;
+
+    AuditService.record(room.id, room.code, 'PLAYER_SELECTED', {
+      action: 'RECALL',
+      playerId: unsoldRecord.player.id,
+      playerName: unsoldRecord.player.name,
+      originalRound: unsoldRecord.originalRound,
+      newSequencePosition,
+    });
+
+    logger.info(
+      { roomId: room.id, playerId, playerName: unsoldRecord.player.name, originalRound: unsoldRecord.originalRound },
+      `[AuctionEngine] Recalled unsold player: ${unsoldRecord.player.name} back into queue at position ${newSequencePosition}`
+    );
+
+    room.updatedAt = Date.now();
+
+    return { player: unsoldRecord.player, newSequencePosition };
+  }
+
+  /**
    * Serializes room data for public broadcast (HIDDEN BIDS STRICTLY ENFORCED)
    */
   static toPublicState(room: RoomData): PublicRoomState {
@@ -188,6 +249,13 @@ export class AuctionEngine {
       squads: squadsList,
       settings: room.settings,
       lastRevealResult: room.auctionState.lastRevealResult,
+      unsoldPlayers: (room.auctionState.unsoldPlayers || [])
+        .filter(u => !u.recalled)
+        .map(u => ({
+          player: u.player,
+          originalRound: u.originalRound,
+        })),
+      unsoldCount: (room.auctionState.unsoldPlayers || []).filter(u => !u.recalled).length,
     };
   }
 
