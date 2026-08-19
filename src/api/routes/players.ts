@@ -2,9 +2,21 @@ import { FastifyPluginAsync } from 'fastify';
 import { roomCodeParamSchema } from '../../validation/roomSchemas.js';
 import { playerQuerySchema } from '../../validation/auctionSchemas.js';
 import { defaultPlayerService } from '../../services/PlayerService.js';
+import { defaultRepositories } from '../../repositories/index.js';
 import { AppError } from '../../utils/errors.js';
 
 export const playerRoutes: FastifyPluginAsync = async (fastify) => {
+  // Get all players from catalogue (for admin/player pool display)
+  fastify.get('/api/players', async (request, reply) => {
+    try {
+      const players = await defaultRepositories.players.getPlayers();
+      return reply.status(200).send({ players, count: players.length });
+    } catch (err: any) {
+      request.log.error({ err }, 'Error fetching player catalogue');
+      return reply.status(500).send({ code: 'INTERNAL_ERROR', message: 'Failed to fetch players' });
+    }
+  });
+
   // Get Players for a room
   fastify.get('/api/rooms/:roomCode/players', async (request, reply) => {
     const paramsResult = roomCodeParamSchema.safeParse(request.params);

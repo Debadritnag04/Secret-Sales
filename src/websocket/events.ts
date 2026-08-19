@@ -31,7 +31,7 @@ export function registerSocketEvents(
     socket.emit('error', { code: 'INTERNAL_ERROR', message: err.message });
   }
 
-  // Notify other room participants
+  // Notify other room participants AND push full state to everyone
   const currentRoom = RoomManager.getRoom(roomCode);
   const participant = currentRoom?.participants.get(participantId);
   if (participant) {
@@ -40,6 +40,9 @@ export function registerSocketEvents(
       name: participant.name,
       squadName: participant.squadName,
     });
+
+    // Push authoritative state to ALL sockets in the room (including host)
+    broadcastStateUpdates(io, roomCode);
   }
 
   // 1. Room Join event (for manual triggers or re-sync)
@@ -62,6 +65,8 @@ export function registerSocketEvents(
         isReady: true,
         isConnected: true,
       });
+      // Push full authoritative state to all clients
+      broadcastStateUpdates(io, roomCode);
     } catch (err: any) {
       socket.emit('error', { code: err.code || 'ERROR', message: err.message });
     }
@@ -75,6 +80,8 @@ export function registerSocketEvents(
         isReady: false,
         isConnected: true,
       });
+      // Push full authoritative state to all clients
+      broadcastStateUpdates(io, roomCode);
     } catch (err: any) {
       socket.emit('error', { code: err.code || 'ERROR', message: err.message });
     }
@@ -256,6 +263,8 @@ export function registerSocketEvents(
       participantId,
       name: participant?.name || 'Participant',
     });
+    // Push updated state to remaining clients
+    broadcastStateUpdates(io, roomCode);
   });
 
   // 10. Disconnect
@@ -266,6 +275,8 @@ export function registerSocketEvents(
       isReady: false,
       isConnected: false,
     });
+    // Push updated state to remaining clients
+    broadcastStateUpdates(io, roomCode);
     logger.info({ socketId: socket.id, roomCode, participantId }, '[Socket] Client disconnected');
   });
 }
