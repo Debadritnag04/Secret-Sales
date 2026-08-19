@@ -542,6 +542,29 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // ─── Reconnect on tab visibility change (mobile background/foreground) ──
+
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible' && credentials) {
+        // Check if socket is still connected
+        if (socketRef.current && !socketRef.current.connected) {
+          socketRef.current.connect();
+        } else if (!socketRef.current) {
+          connectSocket(credentials);
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibility);
+    window.addEventListener('pageshow', handleVisibility);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibility);
+      window.removeEventListener('pageshow', handleVisibility);
+    };
+  }, [credentials, connectSocket]);
+
   return (
     <GameContext.Provider value={{
       room,
