@@ -1,84 +1,43 @@
 PlayerName,OVR,Position,PositionGroup,Tier,Nationality,Club,Photo,Age,Potential,ValueEUR,WageEUR,Pace,Shooting,Passing,Dribbling,Defending,Physic,PreferredFoot,WeakFoot,SkillMoves,WorkRate
 M. Neuer,92,GK,GK,Tier 1 (World Class),Germany,FC Bayern München,https://cdn.sofifa.net/players/167/495/24_120.png,31,92,61000000,225000,,,,,,,Right,4,1,Medium/Medium
 J. Oblak,91,GK,GK,Tier 1 (World Class),Slovenia,Atlético Madrid,https://cdn.sofifa.net/players/200/389/24_120.png,28,93,112000000,130000,,,,,,,Right,3,1,Medium/Medium
-De Gea,91,GK,GK,Tier 1 (World Class),Spain,Manchester United,https://cdn.sofifa.net/players/193/080/24_120.png,27,93,72000000,250000,,,,,,,Right,3,1,Medium/Medium
 M. ter Stegen,90,GK,GK,Tier 1 (World Class),Germany,FC Barcelona,https://cdn.sofifa.net/players/192/448/24_120.png,29,92,99000000,250000,,,,,,,Right,4,1,Medium/Medium
 T. Courtois,90,GK,GK,Tier 1 (World Class),Belgium,Real Madrid,https://cdn.sofifa.net/players/192/119/24_120.png,31,90,63000000,250000,,,,,,,Left,3,1,Medium/Medium
 G. Donnarumma,89,GK,GK,Tier 2 (Elite),Italy,Paris Saint Germain,https://cdn.sofifa.net/players/230/621/24_120.png,22,93,119500000,110000,,,,,,,Right,3,1,Medium/Medium
 Ederson,89,GK,GK,Tier 2 (Elite),Brazil,Manchester City,https://cdn.sofifa.net/players/210/257/24_120.png,28,91,88000000,210000,,,,,,,Left,3,1,Medium/Medium
 G. Buffon,89,GK,GK,Tier 2 (Elite),Italy,Juventus,https://cdn.sofifa.net/players/001/179/24_120.png,39,89,4500000,110000,,,,,,,Right,2,1,Medium/Medium
 H. Lloris,88,GK,GK,Tier 2 (Elite),France,Tottenham Hotspur,https://cdn.sofifa.net/players/167/948/24_120.png,32,88,36000000,150000,,,,,,,Left,1,1,Medium/Medium
-
 K. Navas,88,GK,GK,Tier 2 (Elite),Costa Rica,Paris Saint Germain,https://cdn.sofifa.net/players/193/041/24_120.png,35,88,10000000,85000,,,,,,,Right,3,1,Medium/Medium
 G. Kobel,87,GK,GK,Tier 2 (Elite),Switzerland,Borussia Dortmund,https://cdn.sofifa.net/players/235/073/24_120.png,25,90,81500000,64000,,,,,,,Right,3,1,Medium/Medium
 Sergio Ramos,91,CB,DEF,Tier 1 (World Class),Spain,Real Madrid,https://cdn.sofifa.net/players/155/862/24_120.png,32,91,51000000,375000,75,63,71,71,91,84,Right,3,3,High/Medium
-
-Rúben Dias,89,CB,DEF,Tier 2 (Elite),Portugal,Manchester City,https://cdn.sofifa.net/players/239/818/24_120.png,26,90,106500000,250000,62,39,66,69,89,87,Right,4,2,Medium/High
-K. Koulibaly,89,CB,DEF,Tier 2 (Elite),Senegal,Napoli,https://cdn.sofifa.net/players/201/024/24_120.png,28,91,67500000,145000,71,28,54,67,89,87,Right,3,2,Medium/High
 M. Hummels,89,CB,DEF,Tier 2 (Elite),Germany,FC Bayern München,https://cdn.sofifa.net/players/178/603/24_120.png,29,89,51500000,170000,65,58,76,72,90,76,Right,3,3,High/Medium
-Thiago Silva,89,CB,DEF,Tier 2 (Elite),Brazil,Paris Saint Germain,https://cdn.sofifa.net/players/164/240/24_120.png,31,89,39500000,170000,74,57,73,73,90,79,Right,3,3,High/High
 G. Chiellini,89,CB,DEF,Tier 2 (Elite),Italy,Juventus,https://cdn.sofifa.net/players/138/956/24_120.png,34,89,24500000,210000,68,46,58,60,90,82,Left,3,2,Medium/High
-Marquinhos,88,CB,DEF,Tier 2 (Elite),Brazil,Paris Saint Germain,https://cdn.sofifa.net/players/207/865/24_120.png,28,90,92000000,170000,79,56,75,74,89,80,Right,3,3,Medium/High
-João Cancelo,88,"LB, RB",DEF,Tier 2 (Elite),Portugal,Manchester City,https://cdn.sofifa.net/players/210/514/24_120.png,28,88,82500000,250000,85,73,85,85,81,73,Right,4,4,High/Medium
-
-
-T. Alexander-Arnold,87,RB,DEF,Tier 2 (Elite),England,Liverpool,https://cdn.sofifa.net/players/231/281/24_120.png,23,90,100500000,150000,76,69,89,80,80,73,Right,4,3,High/Medium
 A. Laporte,87,CB,DEF,Tier 2 (Elite),France,Manchester City,https://cdn.sofifa.net/players/212/218/24_120.png,26,90,92500000,200000,63,50,72,68,88,81,Left,3,2,Medium/Medium
 A. Rüdiger,87,CB,DEF,Tier 2 (Elite),Germany,Real Madrid,https://cdn.sofifa.net/players/205/452/24_120.png,29,88,73500000,250000,82,53,71,67,86,85,Right,3,2,High/High
 A. Robertson,87,LB,DEF,Tier 2 (Elite),Scotland,Liverpool,https://cdn.sofifa.net/players/216/267/24_120.png,28,87,72000000,185000,80,61,81,81,82,76,Left,2,3,High/High
 S. Umtiti,87,CB,DEF,Tier 2 (Elite),France,FC Barcelona,https://cdn.sofifa.net/players/205/600/24_120.png,24,92,57000000,200000,72,64,71,72,88,82,Left,3,2,Medium/High
-D. Alaba,87,"LB, CB, CM",DEF,Tier 2 (Elite),Austria,FC Bayern München,https://cdn.sofifa.net/players/197/445/24_120.png,24,90,48000000,140000,86,73,81,83,83,73,Left,4,3,High/Medium
 T. Alderweireld,87,CB,DEF,Tier 2 (Elite),Belgium,Tottenham Hotspur,https://cdn.sofifa.net/players/184/087/24_120.png,30,87,41000000,155000,64,55,72,66,88,79,Right,3,2,Medium/Medium
 Jordi Alba,87,LB,DEF,Tier 2 (Elite),Spain,FC Barcelona,https://cdn.sofifa.net/players/189/332/24_120.png,30,87,40000000,240000,90,69,81,83,79,73,Left,3,3,High/Medium
-
 R. Araujo,86,"CB, RB",DEF,Tier 3 (Top Tier),Uruguay,FC Barcelona,https://cdn.sofifa.net/players/253/163/24_120.png,24,91,93000000,175000,79,51,65,62,86,84,Right,3,2,Medium/High
 M. de Ligt,86,CB,DEF,Tier 3 (Top Tier),Netherlands,FC Bayern München,https://cdn.sofifa.net/players/235/243/24_120.png,23,89,83000000,84000,66,61,64,68,85,86,Right,3,2,Medium/High
 Éder Militão,86,CB,DEF,Tier 3 (Top Tier),Brazil,Real Madrid,https://cdn.sofifa.net/players/240/130/24_120.png,25,89,80000000,210000,85,50,69,71,86,82,Right,3,2,Medium/High
 R. Varane,86,CB,DEF,Tier 3 (Top Tier),France,Manchester United,https://cdn.sofifa.net/players/201/535/24_120.png,28,88,68500000,180000,82,49,64,65,87,82,Right,3,2,Medium/High
 M. Škriniar,86,CB,DEF,Tier 3 (Top Tier),Slovakia,Inter,https://cdn.sofifa.net/players/232/363/24_120.png,27,87,68500000,105000,78,41,57,69,88,86,Right,3,2,Low/High
-Carvajal,86,RB,DEF,Tier 3 (Top Tier),Spain,Real Madrid,https://cdn.sofifa.net/players/204/963/24_120.png,28,86,61500000,230000,80,54,78,80,82,80,Right,3,3,High/High
-
-
-N. Otamendi,86,CB,DEF,Tier 3 (Top Tier),Argentina,Manchester City,https://cdn.sofifa.net/players/192/366/24_120.png,30,86,33000000,180000,60,57,63,59,86,80,Right,3,2,High/High
-M. Benatia,86,CB,DEF,Tier 3 (Top Tier),Morocco,Juventus,https://cdn.sofifa.net/players/177/509/24_120.png,31,86,30000000,160000,70,45,54,64,87,85,Right,3,2,Medium/High
-
 T. Hernández,85,"LB, LM",DEF,Tier 3 (Top Tier),France,Milan,https://cdn.sofifa.net/players/232/656/24_120.png,25,90,73500000,90000,93,71,76,81,78,84,Left,3,3,High/Medium
 A. Bastoni,85,CB,DEF,Tier 3 (Top Tier),Italy,Inter,https://cdn.sofifa.net/players/237/383/24_120.png,24,90,73500000,95000,73,35,72,73,86,83,Left,3,2,Medium/High
-J. Koundé,85,"CB, RB",DEF,Tier 3 (Top Tier),France,FC Barcelona,https://cdn.sofifa.net/players/241/486/24_120.png,24,89,69500000,160000,84,45,68,75,86,80,Right,3,3,High/High
 A. Hakimi,85,"RB, RWB",DEF,Tier 3 (Top Tier),Morocco,Paris Saint Germain,https://cdn.sofifa.net/players/235/212/24_120.png,22,88,69500000,100000,95,71,78,83,76,78,Right,4,3,High/Medium
 N. Süle,85,"CB, RB",DEF,Tier 3 (Top Tier),Germany,Borussia Dortmund,https://cdn.sofifa.net/players/212/190/24_120.png,26,87,59000000,72000,71,48,66,59,85,83,Right,3,3,Medium/Medium
-J. Stones,85,"CB, RB",DEF,Tier 3 (Top Tier),England,Manchester City,https://cdn.sofifa.net/players/203/574/24_120.png,29,86,49500000,180000,72,52,75,77,85,77,Right,4,3,High/Medium
-G. Di Lorenzo,85,RB,DEF,Tier 3 (Top Tier),Italy,Napoli,https://cdn.sofifa.net/players/217/870/24_120.png,29,85,47500000,86000,85,67,75,79,82,82,Right,3,3,High/Medium
 J. Giménez,85,CB,DEF,Tier 3 (Top Tier),Uruguay,Atlético Madrid,https://cdn.sofifa.net/players/216/460/24_120.png,24,89,45000000,69000,69,45,52,54,86,82,Right,3,2,Medium/High
 S. de Vrij,85,CB,DEF,Tier 3 (Top Tier),Netherlands,Inter,https://cdn.sofifa.net/players/198/176/24_120.png,29,85,45000000,145000,72,41,64,70,87,79,Right,3,2,Medium/High
 M. Acuña,85,"LB, LM",DEF,Tier 3 (Top Tier),Argentina,Sevilla,https://cdn.sofifa.net/players/224/334/24_120.png,31,85,39000000,46000,75,74,83,83,81,84,Left,3,3,High/High
-
-K. Walker,85,RB,DEF,Tier 3 (Top Tier),England,Manchester City,https://cdn.sofifa.net/players/188/377/24_120.png,32,85,37500000,170000,91,63,77,78,80,82,Right,2,3,High/High
-K. Trippier,85,RB,DEF,Tier 3 (Top Tier),England,Newcastle United,https://cdn.sofifa.net/players/186/345/24_120.png,32,85,37500000,150000,68,65,86,79,82,72,Right,4,3,Medium/Medium
-K. Glik,85,CB,DEF,Tier 3 (Top Tier),Poland,Monaco,https://cdn.sofifa.net/players/190/547/24_120.png,29,85,30000000,60000,56,32,44,53,86,84,Right,2,2,Low/Medium
 L. Modrić,91,"CM, CDM",MID,Tier 1 (World Class),Croatia,Real Madrid,https://cdn.sofifa.net/players/177/003/24_120.png,32,91,67000000,425000,76,76,90,91,70,67,Right,4,4,High/High
-N. Kanté,90,"CDM, CM",MID,Tier 1 (World Class),France,Chelsea,https://cdn.sofifa.net/players/215/914/24_120.png,30,90,100000000,230000,78,66,75,82,87,83,Right,3,2,Medium/High
 T. Kroos,90,"CM, CDM",MID,Tier 1 (World Class),Germany,Real Madrid,https://cdn.sofifa.net/players/182/521/24_120.png,28,90,76500000,350000,67,82,89,82,74,69,Right,5,3,Medium/Medium
-
-J. Kimmich,89,"CDM, RB",MID,Tier 2 (Elite),Germany,FC Bayern München,https://cdn.sofifa.net/players/212/622/24_120.png,27,90,105500000,130000,68,72,87,84,83,79,Right,4,3,High/Medium
 P. Dybala,89,"CAM, ST, CF",MID,Tier 2 (Elite),Argentina,Juventus,https://cdn.sofifa.net/players/211/110/24_120.png,24,94,89000000,200000,85,85,84,91,28,66,Left,3,4,High/Medium
-
-Casemiro,89,CDM,MID,Tier 2 (Elite),Brazil,Manchester United,https://cdn.sofifa.net/players/200/145/24_120.png,31,89,72000000,240000,63,75,79,73,89,88,Right,3,2,Medium/High
-
 Iniesta,89,"CM, LW",MID,Tier 2 (Elite),Spain,FC Barcelona,https://cdn.sofifa.net/players/000/041/24_120.png,30,89,36000000,250000,75,72,89,91,59,63,Right,4,4,High/Medium
 F. Valverde,88,"CM, RW",MID,Tier 2 (Elite),Uruguay,Real Madrid,https://cdn.sofifa.net/players/239/053/24_120.png,24,92,130500000,270000,88,82,84,84,80,82,Right,4,3,High/High
-Bruno Fernandes,88,"CAM, CM",MID,Tier 2 (Elite),Portugal,Manchester United,https://cdn.sofifa.net/players/212/198/24_120.png,28,88,92000000,260000,71,86,90,83,69,77,Right,3,4,High/High
 Bernardo Silva,88,"CM, RW",MID,Tier 2 (Elite),Portugal,Manchester City,https://cdn.sofifa.net/players/218/667/24_120.png,28,88,91500000,270000,69,78,86,92,70,69,Left,3,4,High/High
-P. Pogba,88,"CM, CDM",MID,Tier 2 (Elite),France,Manchester United,https://cdn.sofifa.net/players/195/864/24_120.png,26,91,72500000,250000,74,81,86,85,66,86,Right,4,5,High/Medium
-
 M. Ødegaard,87,"CAM, CM",MID,Tier 2 (Elite),Norway,Arsenal,https://cdn.sofifa.net/players/222/665/24_120.png,24,90,109000000,170000,72,81,88,87,61,64,Left,2,5,High/Medium
-F. de Jong,87,"CM, CDM",MID,Tier 2 (Elite),Netherlands,FC Barcelona,https://cdn.sofifa.net/players/228/702/24_120.png,26,90,103500000,240000,82,69,86,87,77,78,Right,3,4,High/Medium
-L. Goretzka,87,"CM, CDM",MID,Tier 2 (Elite),Germany,FC Bayern München,https://cdn.sofifa.net/players/209/658/24_120.png,27,88,91000000,115000,78,82,82,83,81,86,Right,4,3,High/Medium
-M. Verratti,87,"CM, CAM",MID,Tier 2 (Elite),Italy,Paris Saint Germain,https://cdn.sofifa.net/players/199/556/24_120.png,29,87,77500000,155000,60,61,87,91,79,66,Right,4,4,Medium/High
-Fabinho,87,"CDM, CB",MID,Tier 2 (Elite),Brazil,Liverpool,https://cdn.sofifa.net/players/209/499/24_120.png,28,88,77000000,185000,66,69,78,77,86,83,Right,2,3,Medium/High
 T. Müller,87,"CAM, CF",MID,Tier 2 (Elite),Germany,FC Bayern München,https://cdn.sofifa.net/players/189/596/24_120.png,32,87,63000000,115000,69,84,83,80,56,71,Right,4,3,High/High
-
-
 J. Musiala,86,"CAM, CM, LM",MID,Tier 3 (Top Tier),Germany,FC Bayern München,https://cdn.sofifa.net/players/256/790/24_120.png,20,93,134500000,79000,85,75,76,91,63,61,Right,4,5,Medium/Medium
 Pedri,86,CM,MID,Tier 3 (Top Tier),Spain,FC Barcelona,https://cdn.sofifa.net/players/251/854/24_120.png,20,92,105000000,165000,78,69,82,88,70,74,Right,4,4,High/High
 J. Bellingham,86,"CM, CAM",MID,Tier 3 (Top Tier),England,Real Madrid,https://cdn.sofifa.net/players/252/371/24_120.png,20,91,100500000,175000,76,78,80,85,78,82,Right,4,4,High/High
@@ -86,43 +45,23 @@ Marcos Llorente,86,"CM, RM, ST",MID,Tier 3 (Top Tier),Spain,Atlético Madrid,htt
 S. Tonali,86,"CDM, CM",MID,Tier 3 (Top Tier),Italy,Newcastle United,https://cdn.sofifa.net/players/241/096/24_120.png,23,89,84000000,140000,84,74,81,81,82,84,Right,4,3,Medium/High
 N. Barella,86,CM,MID,Tier 3 (Top Tier),Italy,Inter,https://cdn.sofifa.net/players/224/232/24_120.png,26,88,83500000,135000,78,78,82,85,78,80,Right,3,3,High/High
 K. Coman,86,LM,MID,Tier 3 (Top Tier),France,FC Bayern München,https://cdn.sofifa.net/players/213/345/24_120.png,26,87,80000000,105000,92,77,79,87,30,61,Right,3,5,Medium/Medium
-S. Milinković-Savić,86,CM,MID,Tier 3 (Top Tier),Serbia,Al Hilal,https://cdn.sofifa.net/players/223/848/24_120.png,28,86,68000000,84000,68,80,82,82,79,86,Right,5,4,High/Medium
-M. Brozović,86,"CDM, CM",MID,Tier 3 (Top Tier),Croatia,Inter,https://cdn.sofifa.net/players/216/352/24_120.png,29,86,58000000,110000,69,74,81,81,81,78,Right,4,3,Medium/Medium
-
-R. Mahrez,86,"RM, RW",MID,Tier 3 (Top Tier),Algeria,Al Ahli Jeddah,https://cdn.sofifa.net/players/204/485/24_120.png,32,86,54000000,72000,79,81,81,89,38,60,Left,4,5,Medium/Medium
 İ. Gündoğan,86,"CM, CDM",MID,Tier 3 (Top Tier),Germany,FC Barcelona,https://cdn.sofifa.net/players/186/942/24_120.png,32,86,53500000,220000,62,81,84,86,72,73,Right,4,4,High/Medium
-
-I. Perišić,86,LM,MID,Tier 3 (Top Tier),Croatia,Inter,https://cdn.sofifa.net/players/181/458/24_120.png,29,86,43500000,120000,86,80,80,84,62,78,Right,5,4,Medium/Medium
 M. Pjanić,86,"CM, CDM",MID,Tier 3 (Top Tier),Bosnia and Herzegovina,Juventus,https://cdn.sofifa.net/players/180/206/24_120.png,29,86,42500000,180000,68,68,87,85,75,67,Right,4,3,Medium/Medium
-
-Parejo,86,"CM, CDM",MID,Tier 3 (Top Tier),Spain,Villarreal,https://cdn.sofifa.net/players/189/513/24_120.png,34,86,31500000,64000,49,83,90,80,73,69,Right,4,3,Medium/Medium
 B. Matuidi,86,"CDM, CM",MID,Tier 3 (Top Tier),France,Paris Saint Germain,https://cdn.sofifa.net/players/170/890/24_120.png,29,86,29500000,140000,79,67,78,76,83,84,Left,2,2,High/High
 K. Havertz,85,"CAM, RM, CF",MID,Tier 3 (Top Tier),Germany,Chelsea,https://cdn.sofifa.net/players/235/790/24_120.png,21,93,121000000,105000,84,81,79,85,45,67,Left,4,4,Medium/Medium
-F. Wirtz,85,"CAM, CM",MID,Tier 3 (Top Tier),Germany,Bayer 04 Leverkusen,https://cdn.sofifa.net/players/256/630/24_120.png,20,91,83500000,65000,74,76,83,87,52,63,Right,4,4,High/Medium
-
 D. Rice,85,"CDM, CM",MID,Tier 3 (Top Tier),England,Arsenal,https://cdn.sofifa.net/players/234/378/24_120.png,24,87,63000000,130000,71,65,75,77,83,83,Right,3,2,Medium/High
 H. Ziyech,85,"CAM, RW",MID,Tier 3 (Top Tier),Morocco,Chelsea,https://cdn.sofifa.net/players/208/670/24_120.png,27,86,62000000,140000,80,76,87,84,50,66,Left,2,5,High/High
 Cristiano Ronaldo,94,"ST, LW",ATT,Tier 1 (World Class),Portugal,Juventus,https://cdn.sofifa.net/players/020/801/24_120.png,33,94,77000000,400000,90,93,81,89,35,79,Right,4,5,High/Low
 R. Lewandowski,92,ST,ATT,Tier 1 (World Class),Poland,FC Bayern München,https://cdn.sofifa.net/players/188/545/24_120.png,32,92,119500000,270000,78,92,79,86,44,82,Right,4,4,High/Medium
-Neymar Jr,92,"LW, CAM",ATT,Tier 1 (World Class),Brazil,Paris Saint Germain,https://cdn.sofifa.net/players/190/871/24_120.png,27,92,105500000,290000,91,85,87,95,32,58,Right,5,5,High/Medium
-
 E. Hazard,91,"LW, CF",ATT,Tier 1 (World Class),Belgium,Real Madrid,https://cdn.sofifa.net/players/183/277/24_120.png,28,91,90000000,470000,91,83,86,94,35,66,Right,4,4,High/Medium
 K. Benzema,91,"CF, ST",ATT,Tier 1 (World Class),France,Real Madrid,https://cdn.sofifa.net/players/165/153/24_120.png,34,91,64000000,450000,80,88,83,87,39,78,Right,4,4,Medium/Medium
 S. Mané,90,LW,ATT,Tier 1 (World Class),Senegal,Liverpool,https://cdn.sofifa.net/players/208/722/24_120.png,28,90,120500000,250000,94,85,80,90,44,76,Right,4,4,High/Medium
-H. Kane,90,ST,ATT,Tier 1 (World Class),England,FC Bayern München,https://cdn.sofifa.net/players/202/126/24_120.png,29,90,119500000,170000,69,93,84,83,49,83,Right,5,3,High/High
-
-Vini Jr.,89,LW,ATT,Tier 2 (Elite),Brazil,Real Madrid,https://cdn.sofifa.net/players/238/794/24_120.png,22,94,158500000,310000,95,82,78,90,29,68,Right,4,5,High/High
 H. Son,89,"LW, LM",ATT,Tier 2 (Elite),Korea Republic,Tottenham Hotspur,https://cdn.sofifa.net/players/200/104/24_120.png,29,89,101000000,240000,88,89,82,86,42,69,Right,5,4,High/Medium
 S. Agüero,89,ST,ATT,Tier 2 (Elite),Argentina,Manchester City,https://cdn.sofifa.net/players/153/079/24_120.png,32,89,83500000,300000,78,90,77,88,33,73,Right,4,4,High/Medium
-A. Griezmann,89,"CF, ST, LW",ATT,Tier 2 (Elite),France,FC Barcelona,https://cdn.sofifa.net/players/194/765/24_120.png,28,89,69000000,370000,81,86,84,89,57,72,Left,3,4,High/High
 E. Cavani,89,ST,ATT,Tier 2 (Elite),Uruguay,Paris Saint Germain,https://cdn.sofifa.net/players/179/813/24_120.png,31,89,60000000,200000,76,87,72,80,52,83,Right,3,3,High/High
 V. Osimhen,88,ST,ATT,Tier 2 (Elite),Nigeria,Napoli,https://cdn.sofifa.net/players/232/293/24_120.png,24,91,126500000,120000,90,86,66,83,42,82,Right,4,3,High/Medium
-R. Sterling,88,"LW, RW",ATT,Tier 2 (Elite),England,Manchester City,https://cdn.sofifa.net/players/202/652/24_120.png,26,89,107500000,290000,91,82,79,87,45,66,Right,3,4,High/Medium
-R. Lukaku,88,ST,ATT,Tier 2 (Elite),Belgium,Chelsea,https://cdn.sofifa.net/players/192/505/24_120.png,28,88,93500000,260000,84,87,74,78,39,83,Left,4,3,Medium/Medium
-
 L. Martínez,87,ST,ATT,Tier 2 (Elite),Argentina,Inter,https://cdn.sofifa.net/players/231/478/24_120.png,25,90,107000000,150000,80,86,71,85,48,85,Right,4,4,High/Medium
 Roberto Firmino,87,CF,ATT,Tier 2 (Elite),Brazil,Liverpool,https://cdn.sofifa.net/players/201/942/24_120.png,28,87,81500000,190000,77,80,81,90,61,78,Right,4,5,High/High
-C. Immobile,87,ST,ATT,Tier 2 (Elite),Italy,Lazio,https://cdn.sofifa.net/players/192/387/24_120.png,31,87,67500000,125000,86,87,67,81,39,77,Right,4,3,High/Medium
 M. Icardi,87,ST,ATT,Tier 2 (Elite),Argentina,Inter,https://cdn.sofifa.net/players/201/399/24_120.png,25,90,64500000,130000,78,85,61,79,36,72,Right,4,3,Medium/Low
 Á. Di María,87,"RW, LW",ATT,Tier 2 (Elite),Argentina,Paris Saint Germain,https://cdn.sofifa.net/players/183/898/24_120.png,33,87,49500000,160000,83,81,86,87,48,69,Left,2,5,High/Medium
 K. Kvaratskhelia,86,"LW, RW",ATT,Tier 3 (Top Tier),Georgia,Napoli,https://cdn.sofifa.net/players/247/635/24_120.png,22,92,109000000,95000,84,80,81,87,41,71,Right,5,5,Medium/Medium
@@ -131,29 +70,18 @@ B. Saka,86,"RW, RM",ATT,Tier 3 (Top Tier),England,Arsenal,https://cdn.sofifa.net
 C. Nkunku,86,"CF, CAM, ST",ATT,Tier 3 (Top Tier),France,Chelsea,https://cdn.sofifa.net/players/232/411/24_120.png,25,88,86500000,185000,82,81,83,88,62,67,Right,3,5,Medium/Medium
 O. Dembélé,86,"RW, LW",ATT,Tier 3 (Top Tier),France,Paris Saint Germain,https://cdn.sofifa.net/players/231/443/24_120.png,26,87,80000000,150000,93,77,81,87,36,57,Left,5,5,High/Medium
 Gerard Moreno,86,"ST, RM, RW",ATT,Tier 3 (Top Tier),Spain,Villarreal,https://cdn.sofifa.net/players/208/093/24_120.png,29,86,68000000,73000,79,86,77,84,46,73,Left,4,3,High/Medium
-L. Sané,86,LW,ATT,Tier 3 (Top Tier),Germany,Manchester City,https://cdn.sofifa.net/players/222/492/24_120.png,23,92,61000000,195000,95,81,79,86,38,70,Left,3,4,High/Medium
 Diego Costa,86,ST,ATT,Tier 3 (Top Tier),Spain,Chelsea,https://cdn.sofifa.net/players/179/844/24_120.png,28,86,46000000,225000,75,83,65,76,40,88,Right,4,3,High/Medium
 A. Lacazette,86,ST,ATT,Tier 3 (Top Tier),France,Arsenal,https://cdn.sofifa.net/players/193/301/24_120.png,28,86,46000000,165000,82,85,75,86,40,74,Right,4,4,High/High
-J. Vardy,86,ST,ATT,Tier 3 (Top Tier),England,Leicester City,https://cdn.sofifa.net/players/208/830/24_120.png,34,86,33000000,180000,85,84,70,80,52,73,Right,4,3,High/Medium
-Rodrygo,85,"RW, LW, ST",ATT,Tier 3 (Top Tier),Brazil,Real Madrid,https://cdn.sofifa.net/players/243/812/24_120.png,22,91,86500000,210000,88,81,79,86,31,62,Right,4,4,Medium/Medium
 P. Foden,85,"LW, RW",ATT,Tier 3 (Top Tier),England,Manchester City,https://cdn.sofifa.net/players/237/692/24_120.png,23,90,81500000,180000,81,79,82,88,57,60,Left,3,4,High/High
-M. Rashford,85,"LW, LM, ST",ATT,Tier 3 (Top Tier),England,Manchester United,https://cdn.sofifa.net/players/231/677/24_120.png,25,88,71500000,185000,90,86,78,84,42,74,Right,3,5,High/Low
-P. Schick,85,ST,ATT,Tier 3 (Top Tier),Czech Republic,Bayer 04 Leverkusen,https://cdn.sofifa.net/players/234/236/24_120.png,26,87,67500000,95000,78,83,71,83,36,76,Left,3,4,High/Medium
 Diogo Jota,85,"CF, LW",ATT,Tier 3 (Top Tier),Portugal,Liverpool,https://cdn.sofifa.net/players/224/458/24_120.png,26,87,67500000,180000,82,82,75,85,57,77,Right,5,4,High/High
-J. Grealish,85,"LW, LM",ATT,Tier 3 (Top Tier),England,Manchester City,https://cdn.sofifa.net/players/206/517/24_120.png,27,85,57500000,200000,76,76,84,88,53,73,Right,3,4,High/High
 Marco Asensio,85,"LW, CAM, RW",ATT,Tier 3 (Top Tier),Spain,Real Madrid,https://cdn.sofifa.net/players/220/834/24_120.png,22,93,56500000,200000,81,84,83,85,43,60,Left,3,4,Medium/Medium
 M. Depay,85,"CF, ST, LW",ATT,Tier 3 (Top Tier),Netherlands,FC Barcelona,https://cdn.sofifa.net/players/202/556/24_120.png,28,85,55000000,230000,83,84,82,86,30,79,Right,3,5,High/Low
-D. Berardi,85,"RW, RM",ATT,Tier 3 (Top Tier),Italy,Sassuolo,https://cdn.sofifa.net/players/210/935/24_120.png,28,85,54500000,40000,82,83,81,87,36,72,Left,3,4,High/Medium
 E. Džeko,85,ST,ATT,Tier 3 (Top Tier),Bosnia and Herzegovina,Roma,https://cdn.sofifa.net/players/180/930/24_120.png,32,85,30500000,110000,66,85,71,75,46,73,Right,4,2,Medium/Medium
-Erling Haaland,91,ST,ATT,Tier 1 (World Class),Norway,Manchester City,https://example.com/haaland.png,,,,,,,,,,,,,,
 Kylian Mbappe,91,ST,ATT,Tier 1 (World Class),France,Paris Saint-Germain,https://example.com/mbappe.png,,,,,,,,,,,,,,
-Kevin De Bruyne,91,CM,MID,Tier 1 (World Class),Belgium,Manchester City,https://example.com/debruyne.png,,,,,,,,,,,,,,
 Lionel Messi,90,RW,ATT,Tier 1 (World Class),Argentina,Inter Miami,https://example.com/messi.png,,,,,,,,,,,,,,
 Virgil van Dijk,89,CB,DEF,Tier 2 (Elite),Netherlands,Liverpool,https://example.com/vandijk.png,,,,,,,,,,,,,,
 Rodri,89,CDM,MID,Tier 2 (Elite),Spain,Manchester City,https://example.com/rodri.png,,,,,,,,,,,,,,
-Alisson,89,GK,GK,Tier 2 (Elite),Brazil,Liverpool,https://example.com/alisson.png,,,,,,,,,,,,,,
 Mohamed Salah,89,RW,ATT,Tier 2 (Elite),Egypt,Liverpool,https://example.com/salah.png,,,,,,,,,,,,,,
-J. Cruyff,93,CF,ATT,Tier 1 (World Class),Netherlands,Icons,https://example.com/jcruyff.png,,,,,,,,,,,,,,
 L. Yashin,92,GK,GK,Tier 1 (World Class),Russia,Icons,https://example.com/lyashin.png,,,,,,,,,,,,,,
 M. van Basten,91,ST,ATT,Tier 1 (World Class),Netherlands,Icons,https://example.com/mvanbasten.png,,,,,,,,,,,,,,
 Cafu,91,RWB,DEF,Tier 1 (World Class),Brazil,Icons,https://example.com/cafu.png,,,,,,,,,,,,,,
@@ -161,69 +89,35 @@ R. Baggio,91,CAM,MID,Tier 1 (World Class),Italy,Icons,https://example.com/rbaggi
 D. Bergkamp,90,CF,ATT,Tier 1 (World Class),Netherlands,Icons,https://example.com/dbergkamp.png,,,,,,,,,,,,,,
 Rivaldo,90,LW,ATT,Tier 1 (World Class),Brazil,Icons,https://example.com/rivaldo.png,,,,,,,,,,,,,,
 K. Dalglish,89,ST,ATT,Tier 2 (Elite),Scotland,Icons,https://example.com/kdalglish.png,,,,,,,,,,,,,,
-C. Puyol,89,CB,DEF,Tier 2 (Elite),Spain,Icons,https://example.com/cpuyol.png,,,,,,,,,,,,,,
-L. Figo,89,RW,ATT,Tier 2 (Elite),Portugal,Icons,https://example.com/lfigo.png,,,,,,,,,,,,,,
 Lúcio,89,CB,DEF,Tier 2 (Elite),Brazil,Heroes,https://example.com/lucio.png,,,,,,,,,,,,,,
-E. Butragueño,89,ST,ATT,Tier 2 (Elite),Spain,Icons,https://example.com/ebutragueno.png,,,,,,,,,,,,,,
-A. Nesta,89,CB,DEF,Tier 2 (Elite),Italy,Icons,https://example.com/anesta.png,,,,,,,,,,,,,,
-A. Shevchenko,88,ST,ATT,Tier 2 (Elite),Ukraine,Icons,https://example.com/ashevchenko.png,,,,,,,,,,,,,,
 M. Desailly,88,CB,DEF,Tier 2 (Elite),France,Icons,https://example.com/mdesailly.png,,,,,,,,,,,,,,
-D. Forlán,88,ST,ATT,Tier 2 (Elite),Uruguay,Heroes,https://example.com/dforlan.png,,,,,,,,,,,,,,
 P. Vieira,88,CM,MID,Tier 2 (Elite),France,Icons,https://example.com/pvieira.png,,,,,,,,,,,,,,
 M. Laudrup,88,CAM,MID,Tier 2 (Elite),Denmark,Icons,https://example.com/mlaudrup.png,,,,,,,,,,,,,,
-F. Ribéry,88,LM,MID,Tier 2 (Elite),France,Icons,https://example.com/fribery.png,,,,,,,,,,,,,,
 M. Gomez,88,ST,ATT,Tier 2 (Elite),Germany,Heroes,https://example.com/mgomez.png,,,,,,,,,,,,,,
-S. Gerrard,88,CM,MID,Tier 2 (Elite),England,Icons,https://example.com/sgerrard.png,,,,,,,,,,,,,,
-J. Okocha,88,CAM,MID,Tier 2 (Elite),Nigeria,Heroes,https://example.com/jokocha.png,,,,,,,,,,,,,,
-J. Cole,87,RW,ATT,Tier 2 (Elite),England,Heroes,https://example.com/jcole.png,,,,,,,,,,,,,,
 I. Wright,87,ST,ATT,Tier 2 (Elite),England,Icons,https://example.com/iwright.png,,,,,,,,,,,,,,
 D. Berbatov,87,ST,ATT,Tier 2 (Elite),Bulgaria,Heroes,https://example.com/dberbatov.png,,,,,,,,,,,,,,
-C. Seedorf,87,CAM,MID,Tier 2 (Elite),Netherlands,Icons,https://example.com/cseedorf.png,,,,,,,,,,,,,,
 E. Cantona,89,CF,ATT,Tier 2 (Elite),France,Icons,https://example.com/ecantona.png,,,,,,,,,,,,,,
 P. Lahm,89,RB,DEF,Tier 2 (Elite),Germany,Icons,https://example.com/plahm.png,,,,,,,,,,,,,,
 Jairzinho,89,RW,ATT,Tier 2 (Elite),Brazil,Icons,https://example.com/jairzinho.png,,,,,,,,,,,,,,
 Sócrates,89,CAM,MID,Tier 2 (Elite),Brazil,Icons,https://example.com/socrates.png,,,,,,,,,,,,,,
-J. Papin,89,ST,ATT,Tier 2 (Elite),France,Heroes,https://example.com/jpapin.png,,,,,,,,,,,,,,
-H. Sánchez,89,ST,ATT,Tier 2 (Elite),Mexico,Icons,https://example.com/hsanchez.png,,,,,,,,,,,,,,
-F. Morientes,89,ST,ATT,Tier 2 (Elite),Spain,Heroes,https://example.com/fmorientes.png,,,,,,,,,,,,,,
 E. van der Sar,88,GK,GK,Tier 2 (Elite),Netherlands,Icons,https://example.com/evandersar.png,,,,,,,,,,,,,,
 P. Scholes,88,CM,MID,Tier 2 (Elite),England,Icons,https://example.com/pscholes.png,,,,,,,,,,,,,,
-E. Francescoli,88,CF,ATT,Tier 2 (Elite),Uruguay,Heroes,https://example.com/efrancescoli.png,,,,,,,,,,,,,,
 C. Tévez,88,ST,ATT,Tier 2 (Elite),Argentina,Heroes,https://example.com/ctevez.png,,,,,,,,,,,,,,
 W. Sneijder,88,CAM,MID,Tier 2 (Elite),Netherlands,Heroes,https://example.com/wsneijder.png,,,,,,,,,,,,,,
 R. van Persie,88,ST,ATT,Tier 2 (Elite),Netherlands,Icons,https://example.com/rvanpersie.png,,,,,,,,,,,,,,
-V. Kompany,88,CB,DEF,Tier 2 (Elite),Belgium,Heroes,https://example.com/vkompany.png,,,,,,,,,,,,,,
-J. Mascherano,88,CB,DEF,Tier 2 (Elite),Argentina,Heroes,https://example.com/jmascherano.png,,,,,,,,,,,,,,
-A. Di Natale,88,ST,ATT,Tier 2 (Elite),Italy,Heroes,https://example.com/adinatale.png,,,,,,,,,,,,,,
 J. Barnes,87,LW,ATT,Tier 2 (Elite),England,Icons,https://example.com/jbarnes.png,,,,,,,,,,,,,,
 F. Torres,87,ST,ATT,Tier 2 (Elite),Spain,Icons,https://example.com/ftorres.png,,,,,,,,,,,,,,
 C. Makélélé,87,CDM,MID,Tier 2 (Elite),France,Icons,https://example.com/cmakelele.png,,,,,,,,,,,,,,
-R. Pirès,87,LM,MID,Tier 2 (Elite),France,Icons,https://example.com/rpires.png,,,,,,,,,,,,,,
-G. Zola,87,CF,ATT,Tier 2 (Elite),Italy,Icons,https://example.com/gzola.png,,,,,,,,,,,,,,
-N. Vidić,87,CB,DEF,Tier 2 (Elite),Serbia,Icons,https://example.com/nvidic.png,,,,,,,,,,,,,,
 D. Trezeguet,87,ST,ATT,Tier 2 (Elite),France,Icons,https://example.com/dtrezeguet.png,,,,,,,,,,,,,,
 M. Ballack,87,CM,MID,Tier 2 (Elite),Germany,Icons,https://example.com/mballack.png,,,,,,,,,,,,,,
-R. Costa,87,CAM,MID,Tier 2 (Elite),Portugal,Icons,https://example.com/rcosta.png,,,,,,,,,,,,,,
 D. Maradona,95,CAM,MID,Tier 1 (World Class),Argentina,Icons,https://example.com/dmaradona.png,,,,,,,,,,,,,,
-F. Beckenbauer,93,CB,DEF,Tier 1 (World Class),Germany,Icons,https://example.com/fbeckenbauer.png,,,,,,,,,,,,,,
 Romário,90,ST,ATT,Tier 1 (World Class),Brazil,Icons,https://example.com/romario.png,,,,,,,,,,,,,,
-G. Rivera,90,CM,MID,Tier 1 (World Class),Italy,Icons,https://example.com/grivera.png,,,,,,,,,,,,,,
 R. Giggs,89,LM,MID,Tier 2 (Elite),Wales,Icons,https://example.com/rgiggs.png,,,,,,,,,,,,,,
-G. Weah,89,ST,ATT,Tier 2 (Elite),Liberia,Icons,https://example.com/gweah.png,,,,,,,,,,,,,,
-Amancio,89,RW,ATT,Tier 2 (Elite),Spain,Icons,https://example.com/amancio.png,,,,,,,,,,,,,,
-R. Rivelino,89,CAM,MID,Tier 2 (Elite),Brazil,Icons,https://example.com/rrivelino.png,,,,,,,,,,,,,,
-G. Facchetti,89,LB,DEF,Tier 2 (Elite),Italy,Icons,https://example.com/gfacchetti.png,,,,,,,,,,,,,,
-Pelé,95,CAM,MID,Tier 1 (World Class),Brazil,Icons,https://example.com/pele.png,,,,,,,,,,,,,,
 B. Charlton,92,CAM,MID,Tier 1 (World Class),England,Icons,https://example.com/bcharlton.png,,,,,,,,,,,,,,
 F. Baresi,91,CB,DEF,Tier 1 (World Class),Italy,Icons,https://example.com/fbaresi.png,,,,,,,,,,,,,,
-Carlos Alberto,91,RB,DEF,Tier 1 (World Class),Brazil,Icons,https://example.com/carlosalberto.png,,,,,,,,,,,,,,
-Roberto Carlos,90,LB,DEF,Tier 1 (World Class),Brazil,Icons,https://example.com/robertocarlos.png,,,,,,,,,,,,,,
 Xavi,90,CM,MID,Tier 1 (World Class),Spain,Icons,https://example.com/xavi.png,,,,,,,,,,,,,,
 I. Casillas,90,GK,GK,Tier 1 (World Class),Spain,Icons,https://example.com/icasillas.png,,,,,,,,,,,,,,
-B. Moore,90,CB,DEF,Tier 1 (World Class),England,Icons,https://example.com/bmoore.png,,,,,,,,,,,,,,
 D. Ginola,89,LM,MID,Tier 2 (Elite),France,Heroes,https://example.com/dginola.png,,,,,,,,,,,,,,
-J. Guardiola,87,CDM,MID,Tier 2 (Elite),Spain,Icons,https://example.com/jguardiola.png,,,,,,,,,,,,,,
-Z. Zidane,94,CAM,MID,Tier 1 (World Class),France,Icons,https://example.com/zzidane.png,,,,,,,,,,,,,,
 G. Müller,92,ST,ATT,Tier 1 (World Class),Germany,Icons,https://example.com/gmuller.png,,,,,,,,,,,,,,
 F. Puskás,92,CF,ATT,Tier 1 (World Class),Hungary,Icons,https://example.com/fpuskas.png,,,,,,,,,,,,,,
 Garrincha,92,RW,ATT,Tier 1 (World Class),Brazil,Icons,https://example.com/garrincha.png,,,,,,,,,,,,,,
@@ -231,49 +125,30 @@ T. Henry,91,ST,ATT,Tier 1 (World Class),France,Icons,https://example.com/thenry.
 Zico,91,CAM,MID,Tier 1 (World Class),Brazil,Icons,https://example.com/zico.png,,,,,,,,,,,,,,
 A. Del Piero,90,CF,ATT,Tier 1 (World Class),Italy,Icons,https://example.com/adelpiero.png,,,,,,,,,,,,,,
 Raúl,90,CF,ATT,Tier 1 (World Class),Spain,Icons,https://example.com/raul.png,,,,,,,,,,,,,,
-J. Kohler,89,CB,DEF,Tier 2 (Elite),Germany,Heroes,https://example.com/jkohler.png,,,,,,,,,,,,,,
-
 G. Lineker,89,ST,ATT,Tier 2 (Elite),England,Icons,https://example.com/glineker.png,,,,,,,,,,,,,,
-A. Pelé,89,CAM,MID,Tier 2 (Elite),Ghana,Heroes,https://example.com/apele.png,,,,,,,,,,,,,,
-Kaká,89,CAM,MID,Tier 2 (Elite),Brazil,Icons,https://example.com/kaka.png,,,,,,,,,,,,,,
 H. Stoichkov,89,ST,ATT,Tier 2 (Elite),Bulgaria,Icons,https://example.com/hstoichkov.png,,,,,,,,,,,,,,
 L. Blanc,88,CB,DEF,Tier 2 (Elite),France,Icons,https://example.com/lblanc.png,,,,,,,,,,,,,,
 W. Rooney,88,ST,ATT,Tier 2 (Elite),England,Icons,https://example.com/wrooney.png,,,,,,,,,,,,,,
 P. Nedvěd,88,LM,MID,Tier 2 (Elite),Czech Republic,Icons,https://example.com/pnedved.png,,,,,,,,,,,,,,
 B. Lizarazu,88,LWB,DEF,Tier 2 (Elite),France,Heroes,https://example.com/blizarazu.png,,,,,,,,,,,,,,
 D. Beckham,88,RM,MID,Tier 2 (Elite),England,Icons,https://example.com/dbeckham.png,,,,,,,,,,,,,,
-M. Klose,88,ST,ATT,Tier 2 (Elite),Germany,Icons,https://example.com/mklose.png,,,,,,,,,,,,,,
 R. Koeman,88,CB,DEF,Tier 2 (Elite),Netherlands,Icons,https://example.com/rkoeman.png,,,,,,,,,,,,,,
-G. Hagi,88,CAM,MID,Tier 2 (Elite),Romania,Icons,https://example.com/ghagi.png,,,,,,,,,,,,,,
 B. Schweinsteiger,88,CM,MID,Tier 2 (Elite),Germany,Icons,https://example.com/bschweinsteiger.png,,,,,,,,,,,,,,
 P. Čech,88,GK,GK,Tier 2 (Elite),Czech Republic,Icons,https://example.com/pcech.png,,,,,,,,,,,,,,
-R. Márquez,88,CB,DEF,Tier 2 (Elite),Mexico,Heroes,https://example.com/rmarquez.png,,,,,,,,,,,,,,
 J. Riquelme,88,CAM,MID,Tier 2 (Elite),Argentina,Icons,https://example.com/jriquelme.png,,,,,,,,,,,,,,
-I. Rush,87,ST,ATT,Tier 2 (Elite),Wales,Icons,https://example.com/irush.png,,,,,,,,,,,,,,
-F. Rijkaard,87,CDM,MID,Tier 2 (Elite),Netherlands,Icons,https://example.com/frijkaard.png,,,,,,,,,,,,,,
-X. Alonso,87,CDM,MID,Tier 2 (Elite),Spain,Icons,https://example.com/xalonso.png,,,,,,,,,,,,,,
 Y. Touré,87,CDM,MID,Tier 2 (Elite),Ivory Coast,Heroes,https://example.com/ytoure.png,,,,,,,,,,,,,,
-I. Córdoba,87,CB,DEF,Tier 2 (Elite),Colombia,Heroes,https://example.com/icordoba.png,,,,,,,,,,,,,,
-Ronaldo,94,ST,ATT,Tier 1 (World Class),Brazil,Icons,https://example.com/ronaldo.png,,,,,,,,,,,,,,
-Ronaldinho,93,LW,ATT,Tier 1 (World Class),Brazil,Icons,https://example.com/ronaldinho.png,,,,,,,,,,,,,,
 P. Maldini,92,CB,DEF,Tier 1 (World Class),Italy,Icons,https://example.com/pmaldini.png,,,,,,,,,,,,,,
 Eusébio,91,CF,ATT,Tier 1 (World Class),Portugal,Icons,https://example.com/eusebio.png,,,,,,,,,,,,,,
 L. Matthäus,90,CM,MID,Tier 1 (World Class),Germany,Icons,https://example.com/lmatthaus.png,,,,,,,,,,,,,,
 R. Gullit,90,CF,ATT,Tier 1 (World Class),Netherlands,Icons,https://example.com/rgullit.png,,,,,,,,,,,,,,
-A. Pirlo,90,CM,MID,Tier 1 (World Class),Italy,Icons,https://example.com/apirlo.png,,,,,,,,,,,,,,
 G. Best,90,RW,ATT,Tier 1 (World Class),Northern Ireland,Icons,https://example.com/gbest.png,,,,,,,,,,,,,,
 P. Schmeichel,89,GK,GK,Tier 2 (Elite),Denmark,Icons,https://example.com/pschmeichel.png,,,,,,,,,,,,,,
-F. Cannavaro,89,CB,DEF,Tier 2 (Elite),Italy,Icons,https://example.com/fcannavaro.png,,,,,,,,,,,,,,
 A. Shearer,89,ST,ATT,Tier 2 (Elite),England,Icons,https://example.com/ashearer.png,,,,,,,,,,,,,,
 R. Völler,89,ST,ATT,Tier 2 (Elite),Germany,Heroes,https://example.com/rvoller.png,,,,,,,,,,,,,,
 D. Drogba,89,ST,ATT,Tier 2 (Elite),Ivory Coast,Icons,https://example.com/ddrogba.png,,,,,,,,,,,,,,
 R. van Nistelrooy,89,ST,ATT,Tier 2 (Elite),Netherlands,Icons,https://example.com/rvannistelrooy.png,,,,,,,,,,,,,,
-S. Eto'o,89,ST,ATT,Tier 2 (Elite),Cameroon,Icons,https://example.com/setoo.png,,,,,,,,,,,,,,
 J. Zanetti,89,RB,DEF,Tier 2 (Elite),Argentina,Icons,https://example.com/jzanetti.png,,,,,,,,,,,,,,
-M. Owen,88,ST,ATT,Tier 2 (Elite),England,Icons,https://example.com/mowen.png,,,,,,,,,,,,,,
-
 F. Hierro,88,CB,DEF,Tier 2 (Elite),Spain,Icons,https://example.com/fhierro.png,,,,,,,,,,,,,,
-R. Ferdinand,88,CB,DEF,Tier 2 (Elite),England,Icons,https://example.com/rferdinand.png,,,,,,,,,,,,,,
 R. Carvalho,88,CB,DEF,Tier 2 (Elite),Portugal,Heroes,https://example.com/rcarvalho.png,,,,,,,,,,,,,,
 P. Kluivert,87,ST,ATT,Tier 2 (Elite),Netherlands,Icons,https://example.com/pkluivert.png,,,,,,,,,,,,,,
 F. Lampard,87,CM,MID,Tier 2 (Elite),England,Icons,https://example.com/flampard.png,,,,,,,,,,,,,,
