@@ -12,11 +12,17 @@ export interface RevealOutcome {
   revealResult: RevealResult;
   updatedSquad?: Squad;
   purchase?: PlayerPurchase;
+  deciderRequired: boolean;
 }
 
 export class RevealManager {
   /**
-   * Performs an atomic reveal of the current round bids
+   * Performs an atomic reveal of the current round bids.
+   * 
+   * Three possible outcomes:
+   * 1. Clear winner (single highest bid) → process sale immediately
+   * 2. UNSOLD (all bids = 0) → add to unsold list
+   * 3. TIE (multiple highest bidders) → transition to DECIDER phase, host decides
    */
   static executeReveal(room: RoomData): RevealOutcome {
     const { auctionState, squads, playerPool } = room;
@@ -39,7 +45,7 @@ export class RevealManager {
     const currentPlayer = auctionState.currentPlayer;
     const bidsList = Object.values(auctionState.bids);
 
-    // 2. Resolve winner and ties
+    // 2. Resolve winner / detect ties
     const revealResult = WinnerResolver.resolve(
       auctionState.currentRound,
       currentPlayer,
@@ -49,10 +55,52 @@ export class RevealManager {
 
     auctionState.lastRevealResult = revealResult;
 
+    // ─── OUTCOME 3: TIE → DECIDER ────────────────────────────────────────
+    if (revealResult.isDeciderRequired && revealResult.tieBreak) {
+      // Transition to DECIDER phase — do NOT assign player
+      auctionState.phase = 'DECIDER';
+
+      // Store decider state for the host UI
+      auctionState.deciderState = {
+        roundId: `round_${auctionState.currentRound}`,
+        player: currentPlayer,
+        highestBid: revealResult.tieBreak.highestBid,
+        tiedSquads: revealResult.tieBreak.tiedSquadIds.map((squadId) => {
+          const squad = squads.get(squadId);
+          return {
+            squadId,
+            squadName: squad?.squadName || 'Unknown',
+            budget: squad?.budget || 0,
+          };
+        }),
+      };
+
+      AuditService.record(room.id, room.code, 'TIE_BREAK', {
+        round: auctionState.currentRound,
+        playerId: currentPlayer.id,
+        playerName: currentPlayer.name,
+        highestBid: revealResult.tieBreak.highestBid,
+        tiedSquadIds: revealResult.tieBreak.tiedSquadIds,
+        tiedSquadNames: revealResult.tieBreak.tiedSquadNames,
+        method: 'host_decider',
+      });
+
+      logger.info(
+        { roomId: room.id, round: auctionState.currentRound, tiedSquads: revealResult.tieBreak.tiedSquadNames },
+        `[RevealManager] Round ${auctionState.currentRound} — TIE at ${revealResult.tieBreak.highestBid} Cr. DECIDER required.`
+      );
+
+      // Do NOT save history yet — it will be saved after decider resolves
+      return {
+        revealResult,
+        deciderRequired: true,
+      };
+    }
+
     let updatedSquad: Squad | undefined;
     let purchase: PlayerPurchase | undefined;
 
-    // 3. Process winner transactions if a winner exists
+    // ─── OUTCOME 1: CLEAR WINNER ─────────────────────────────────────────
     if (revealResult.winnerSquadId && revealResult.winningBid > 0) {
       const winnerSquad = squads.get(revealResult.winnerSquadId);
       if (!winnerSquad) {
@@ -85,10 +133,11 @@ export class RevealManager {
         winnerSquadId: winnerSquad.id,
         winnerSquadName: winnerSquad.squadName,
         winningBid: revealResult.winningBid,
-        tieBreakUsed: !!revealResult.tieBreak,
+        tieBreakUsed: false,
       });
-    } else {
-      // Unsold — all bids were 0 or no valid bids
+    }
+    // ─── OUTCOME 2: UNSOLD ───────────────────────────────────────────────
+    else if (revealResult.isUnsold) {
       const poolPlayer = playerPool.find((p) => p.id === currentPlayer.id);
       if (poolPlayer) {
         poolPlayer.status = 'unsold';
@@ -103,7 +152,7 @@ export class RevealManager {
       });
     }
 
-    // 4. Save round history
+    // 4. Save round history (only for non-decider outcomes)
     const historyItem: RoundHistory = {
       round: auctionState.currentRound,
       player: currentPlayer,
@@ -116,6 +165,7 @@ export class RevealManager {
         amount: b.amount,
       })),
       tieBreak: revealResult.tieBreak,
+      decider: null,
       timestamp: revealResult.timestamp,
     };
 
@@ -126,17 +176,19 @@ export class RevealManager {
       winnerSquadId: revealResult.winnerSquadId,
       winningBid: revealResult.winningBid,
       totalBids: bidsList.length,
+      isUnsold: revealResult.isUnsold,
     });
 
     logger.info(
       { roomId: room.id, round: auctionState.currentRound, winner: revealResult.winnerSquadName, bid: revealResult.winningBid },
-      `[RevealManager] Round ${auctionState.currentRound} revealed. Winner: ${revealResult.winnerSquadName || 'None'}`
+      `[RevealManager] Round ${auctionState.currentRound} revealed. Winner: ${revealResult.winnerSquadName || 'UNSOLD'}`
     );
 
     return {
       revealResult,
       updatedSquad,
       purchase,
+      deciderRequired: false,
     };
   }
 }

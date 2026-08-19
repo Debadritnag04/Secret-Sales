@@ -7,14 +7,21 @@ export type AuctionPhase =
   | 'STARTING'
   | 'BIDDING'
   | 'REVEALING'
+  | 'DECIDER'
   | 'COMPLETED'
   | 'ENDED';
 
 export interface TieBreakResult {
   isTie: boolean;
   tiedSquadIds: string[];
-  winnerSquadId: string;
-  method: 'cryptographic_random';
+  tiedSquadNames: string[];
+  highestBid: number;
+  winnerSquadId: string | null;
+  winnerSquadName: string | null;
+  finalPrice: number | null;
+  method: 'host_decider' | 'cryptographic_random';
+  decidedBy?: string;
+  decidedAt?: number;
   timestamp: number;
 }
 
@@ -35,7 +42,33 @@ export interface RevealResult {
   winningBid: number;
   tieBreak: TieBreakResult | null;
   isUnsold: boolean;
+  isDeciderRequired: boolean;
   timestamp: number;
+}
+
+export interface DeciderState {
+  roundId: string;
+  player: Player;
+  highestBid: number;
+  tiedSquads: { squadId: string; squadName: string; budget: number }[];
+}
+
+export interface DeciderResolution {
+  winningTeamId: string;
+  finalPrice: number;
+}
+
+export interface DeciderRecord {
+  round: number;
+  player: Player;
+  originalHighestBid: number;
+  tiedSquadIds: string[];
+  tiedSquadNames: string[];
+  winningSquadId: string;
+  winningSquadName: string;
+  finalPrice: number;
+  decidedBy: string;
+  decidedAt: number;
 }
 
 export interface RoundHistory {
@@ -50,6 +83,7 @@ export interface RoundHistory {
     amount: number;
   }[];
   tieBreak: TieBreakResult | null;
+  decider?: DeciderRecord | null;
   timestamp: number;
 }
 
@@ -73,4 +107,6 @@ export interface AuctionState {
   currentPlayerIndex: number;
   history: RoundHistory[];
   unsoldPlayers: UnsoldPlayerRecord[];
+  deciderState: DeciderState | null;
+  deciderHistory: DeciderRecord[];
 }

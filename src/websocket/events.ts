@@ -255,7 +255,72 @@ export function registerSocketEvents(
     }
   });
 
-  // 9. Leave Room
+  // 10. Resolve Decider (Host only)
+  socket.on('auction:resolve_decider' as any, async (data: any, callback?: any) => {
+    const winningTeamId = data?.winningTeamId;
+    const finalPrice = data?.finalPrice;
+
+    if (!winningTeamId || finalPrice === undefined || finalPrice === null) {
+      socket.emit('error', { code: 'VALIDATION_ERROR', message: 'winningTeamId and finalPrice are required' });
+      if (callback) callback({ status: 'error', message: 'winningTeamId and finalPrice are required' });
+      return;
+    }
+
+    try {
+      const result = await defaultAuctionService.resolveDecider(roomCode, participantId, {
+        winningTeamId,
+        finalPrice: Number(finalPrice),
+      });
+
+      // Broadcast decider resolved to all clients
+      io.to(socketRoomKey).emit('auction:decider_resolved' as any, {
+        round: result.deciderRecord.round,
+        player: result.deciderRecord.player,
+        winningTeamId: result.deciderRecord.winningSquadId,
+        winningTeamName: result.deciderRecord.winningSquadName,
+        finalPrice: result.deciderRecord.finalPrice,
+        originalHighestBid: result.deciderRecord.originalHighestBid,
+        tiedSquadNames: result.deciderRecord.tiedSquadNames,
+      });
+
+      // Also emit winner event for consistency
+      io.to(socketRoomKey).emit('auction:winner', {
+        round: result.deciderRecord.round,
+        player: result.deciderRecord.player,
+        winnerSquadId: result.deciderRecord.winningSquadId,
+        winnerSquadName: result.deciderRecord.winningSquadName,
+        winningBid: result.deciderRecord.finalPrice,
+        tieBreak: {
+          isTie: true,
+          tiedSquadIds: result.deciderRecord.tiedSquadIds,
+          tiedSquadNames: result.deciderRecord.tiedSquadNames,
+          highestBid: result.deciderRecord.originalHighestBid,
+          winnerSquadId: result.deciderRecord.winningSquadId,
+          winnerSquadName: result.deciderRecord.winningSquadName,
+          finalPrice: result.deciderRecord.finalPrice,
+          method: 'host_decider',
+          decidedBy: result.deciderRecord.decidedBy,
+          decidedAt: result.deciderRecord.decidedAt,
+          timestamp: result.deciderRecord.decidedAt,
+        },
+      });
+
+      // Budget update
+      io.to(socketRoomKey).emit('budget:updated', {
+        squadId: result.updatedSquad.id,
+        budget: result.updatedSquad.budget,
+        spent: result.updatedSquad.spent,
+      });
+
+      broadcastStateUpdates(io, roomCode);
+      if (callback) callback({ status: 'ok' });
+    } catch (err: any) {
+      socket.emit('error', { code: err.code || 'DECIDER_FAILED', message: err.message });
+      if (callback) callback({ status: 'error', message: err.message });
+    }
+  });
+
+  // 11. Leave Room
   socket.on('room:leave', () => {
     socket.leave(socketRoomKey);
     RoomManager.setConnectionStatus(roomCode, participantId, null, false);
@@ -290,12 +355,21 @@ function handleRevealBroadcast(
   outcome: any
 ) {
   const socketRoomKey = `room:${roomCode.toUpperCase()}`;
-  const { revealResult, updatedSquad, purchase } = outcome;
+  const { revealResult, updatedSquad, purchase, deciderRequired } = outcome;
 
   io.to(socketRoomKey).emit('auction:reveal_started');
   io.to(socketRoomKey).emit('auction:revealed', revealResult);
 
-  if (revealResult.isUnsold) {
+  if (deciderRequired && revealResult.isDeciderRequired) {
+    // TIE detected — broadcast decider required event
+    const room = RoomManager.getRoom(roomCode);
+    io.to(socketRoomKey).emit('auction:decider_required' as any, {
+      round: revealResult.round,
+      player: revealResult.player,
+      highestBid: revealResult.tieBreak?.highestBid || revealResult.winningBid,
+      tiedSquads: room?.auctionState.deciderState?.tiedSquads || [],
+    });
+  } else if (revealResult.isUnsold) {
     // Player is unsold — broadcast unsold event
     const room = RoomManager.getRoom(roomCode);
     const unsoldCount = room ? (room.auctionState.unsoldPlayers || []).filter((u: any) => !u.recalled).length : 0;

@@ -1,5 +1,5 @@
 import { Squad } from './team.js';
-import { AuctionState, AuctionPhase } from './auction.js';
+import { AuctionState, AuctionPhase, DeciderState, DeciderRecord } from './auction.js';
 import { Player } from './player.js';
 
 export interface RoomSettings {
@@ -73,6 +73,8 @@ export interface PublicRoomState {
     originalRound: number;
   }[];
   unsoldCount: number;
+  deciderState: DeciderState | null;
+  deciderHistory: DeciderRecord[];
 }
 
 export interface PrivateParticipantState extends PublicRoomState {

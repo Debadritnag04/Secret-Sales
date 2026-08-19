@@ -14,6 +14,7 @@ export interface ClientToServerEvents {
   'auction:force_reveal': () => void;
   'auction:next': () => void;
   'auction:recall_player': (data: { playerId: string }, callback?: (res: any) => void) => void;
+  'auction:resolve_decider': (data: { winningTeamId: string; finalPrice: number }, callback?: (res: any) => void) => void;
   'team:update_name': (data: { squadName: string }) => void;
   'host:end_auction': () => void;
 }
@@ -40,6 +41,8 @@ export interface ServerToClientEvents {
   }) => void;
   'auction:player_unsold': (data: { player: Player; round: number; unsoldCount: number }) => void;
   'auction:player_recalled': (data: { player: Player; newSequencePosition: number }) => void;
+  'auction:decider_required': (data: { round: number; player: Player; highestBid: number; tiedSquads: { squadId: string; squadName: string; budget: number }[] }) => void;
+  'auction:decider_resolved': (data: { round: number; player: Player; winningTeamId: string; winningTeamName: string; finalPrice: number; originalHighestBid: number; tiedSquadNames: string[] }) => void;
   'auction:next_player': (data: { round: number; player: Player }) => void;
   'auction:completed': (data: { totalRounds: number; timestamp: number }) => void;
   'team:updated': (squad: Squad) => void;

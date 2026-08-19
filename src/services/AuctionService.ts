@@ -3,6 +3,7 @@ import { AuctionEngine } from '../auction/AuctionEngine.js';
 import { AuctionManager } from '../auction/AuctionManager.js';
 import { RoomManager } from '../rooms/RoomManager.js';
 import { Repositories, defaultRepositories } from '../repositories/index.js';
+import { DeciderResolution } from '../types/auction.js';
 import { createError } from '../utils/errors.js';
 
 export class AuctionService {
@@ -95,6 +96,46 @@ export class AuctionService {
     }
 
     const result = await AuctionManager.recallPlayer(room, requesterId, playerId);
+    await this.repos.rooms.updateRoom(room);
+    return result;
+  }
+
+  async resolveDecider(
+    roomCode: string,
+    requesterId: string,
+    resolution: DeciderResolution
+  ): Promise<{ updatedSquad: any; purchase: any; deciderRecord: any }> {
+    const room = RoomManager.getRoom(roomCode);
+    if (!room) {
+      throw createError('ROOM_NOT_FOUND', `Room with code ${roomCode} not found`, 404);
+    }
+
+    const result = await AuctionManager.resolveDecider(room, requesterId, resolution);
+
+    // Persist squad budget update
+    await this.repos.teams.updateSquadBudget(
+      result.updatedSquad.id,
+      result.updatedSquad.budget,
+      result.updatedSquad.spent
+    );
+
+    // Save round history
+    await this.repos.auctions.saveRoundHistory(room.id, {
+      round: result.deciderRecord.round,
+      player: result.deciderRecord.player,
+      winnerSquadId: result.deciderRecord.winningSquadId,
+      winnerSquadName: result.deciderRecord.winningSquadName,
+      winningBid: result.deciderRecord.finalPrice,
+      bids: room.auctionState.lastRevealResult?.bids.map(b => ({
+        squadId: b.squadId,
+        squadName: b.squadName,
+        amount: b.amount,
+      })) || [],
+      tieBreak: room.auctionState.lastRevealResult?.tieBreak || null,
+      decider: result.deciderRecord,
+      timestamp: Date.now(),
+    });
+
     await this.repos.rooms.updateRoom(room);
     return result;
   }

@@ -1,5 +1,7 @@
 import { RoomData } from '../types/room.js';
 import { SealedBid, BidSubmissionProgress } from '../types/bid.js';
+import { DeciderResolution, DeciderRecord } from '../types/auction.js';
+import { PlayerPurchase, Squad } from '../types/team.js';
 import { RevealOutcome, RevealManager } from './RevealManager.js';
 import { BidManager } from './BidManager.js';
 import { AuctionEngine } from './AuctionEngine.js';
@@ -119,6 +121,25 @@ export class AuctionManager {
       }
 
       return AuctionEngine.recallPlayer(room, playerId);
+    });
+  }
+
+  /**
+   * Resolves a DECIDER tie-break under per-room concurrency lock.
+   * Only the host can submit the decision.
+   */
+  static async resolveDecider(
+    room: RoomData,
+    requesterId: string,
+    resolution: DeciderResolution
+  ): Promise<{ updatedSquad: Squad; purchase: PlayerPurchase; deciderRecord: DeciderRecord }> {
+    return RoomMutexManager.runExclusive(room.id, async () => {
+      const participant = room.participants.get(requesterId);
+      if (!participant || !participant.isHost) {
+        throw createError('NOT_HOST', 'Only the room host can resolve the decider');
+      }
+
+      return AuctionEngine.resolveDecider(room, resolution);
     });
   }
 }

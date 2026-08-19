@@ -37,6 +37,8 @@ const createMockAuctionState = (phase: AuctionState['phase'] = 'BIDDING'): Aucti
   currentPlayerIndex: 1,
   history: [],
   unsoldPlayers: [],
+  deciderState: null,
+  deciderHistory: [],
 });
 
 describe('BidManager', () => {

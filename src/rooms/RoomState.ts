@@ -67,6 +67,8 @@ export class RoomStateFactory {
         currentPlayerIndex: 0,
         history: [],
         unsoldPlayers: [],
+        deciderState: null,
+        deciderHistory: [],
       },
       createdAt: Date.now(),
       updatedAt: Date.now(),

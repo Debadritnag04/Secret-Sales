@@ -6,9 +6,11 @@ import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function Auction() {
-  const { room, credentials, submitBid, forceReveal, nextPlayer, endAuction, recallPlayer } = useGame();
+  const { room, credentials, submitBid, forceReveal, nextPlayer, endAuction, recallPlayer, resolveDecider } = useGame();
   const [bidInput, setBidInput] = useState<string>('');
   const [showUnsold, setShowUnsold] = useState(false);
+  const [deciderPrice, setDeciderPrice] = useState<string>('');
+  const [deciderWinner, setDeciderWinner] = useState<string>('');
 
   // Only redirect if there's genuinely no session at all
   if (!room && !credentials) return <Navigate to="/" />;
@@ -47,6 +49,7 @@ export default function Auction() {
 
   const isBidding = phase === 'BIDDING' || phase === 'STARTING';
   const isRevealing = phase === 'REVEALING';
+  const isDecider = phase === 'DECIDER';
   const waitingCount = totalParticipants - submittedCount;
 
   const handleBid = () => {
@@ -65,6 +68,20 @@ export default function Auction() {
     submitBid(0);
   };
 
+  const deciderState = room.deciderState;
+
+  const handleDeciderSubmit = () => {
+    if (!deciderWinner || !deciderPrice) return;
+    const price = Number(deciderPrice);
+    if (isNaN(price) || price < 0) return;
+    // Validate 1 decimal place
+    const parts = deciderPrice.split('.');
+    if (parts[1] && parts[1].length > 1) return;
+    resolveDecider(deciderWinner, price);
+    setDeciderPrice('');
+    setDeciderWinner('');
+  };
+
   const presetBids = [minBid, minBid + 5, minBid + 10, minBid + 20].filter(v => v <= myBudget);
 
   return (
@@ -75,9 +92,9 @@ export default function Auction() {
           <span className="text-zinc-400 font-medium">Round <span className="text-white">{currentRound}</span></span>
           <div className="h-4 w-px bg-zinc-800" />
           <div className="flex items-center gap-2">
-            <div className={cn("w-2 h-2 rounded-full", isBidding ? "bg-emerald-500 animate-pulse" : "bg-blue-500")} />
+            <div className={cn("w-2 h-2 rounded-full", isBidding ? "bg-emerald-500 animate-pulse" : isDecider ? "bg-amber-500 animate-pulse" : "bg-blue-500")} />
             <span className="text-sm text-zinc-300 font-medium uppercase tracking-wider">
-              {isBidding ? 'Accepting Bids' : isRevealing ? 'Results Reveal' : phase}
+              {isBidding ? 'Accepting Bids' : isRevealing ? 'Results Reveal' : isDecider ? 'Decider' : phase}
             </span>
           </div>
           {unsoldCount > 0 && (
@@ -310,6 +327,87 @@ export default function Auction() {
                   )}
                 </div>
               </motion.div>
+            ) : isDecider && deciderState ? (
+              <motion.div
+                key={`decider-${currentRound}`}
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: -20 }}
+                transition={{ duration: 0.4 }}
+                className="max-w-lg w-full"
+              >
+                <div className="bg-amber-950/20 border border-amber-500/20 rounded-2xl p-6 mb-6 text-center">
+                  <div className="text-amber-400 text-sm font-bold uppercase tracking-wider mb-2">Tie Detected</div>
+                  <h2 className="text-2xl font-bold text-white mb-1">{deciderState.player?.name || 'Player'}</h2>
+                  <p className="text-zinc-400 text-sm">Highest Bid: <span className="text-amber-400 font-bold">{deciderState.highestBid} Cr</span></p>
+                </div>
+
+                <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-6">
+                  <div>
+                    <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-3">Tied Teams</h3>
+                    <div className="space-y-2">
+                      {(deciderState.tiedSquads || []).map((team) => (
+                        <label
+                          key={team.squadId}
+                          className={cn(
+                            "flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all",
+                            deciderWinner === team.squadId
+                              ? "bg-emerald-950/20 border-emerald-500/40"
+                              : "bg-zinc-950 border-zinc-800 hover:border-zinc-700"
+                          )}
+                        >
+                          <div className="flex items-center gap-3">
+                            {isHost && (
+                              <input
+                                type="radio"
+                                name="decider-winner"
+                                value={team.squadId}
+                                checked={deciderWinner === team.squadId}
+                                onChange={() => setDeciderWinner(team.squadId)}
+                                className="accent-emerald-500"
+                              />
+                            )}
+                            <div>
+                              <p className="text-white font-medium">{team.squadName}</p>
+                              <p className="text-xs text-zinc-500">Budget: {team.budget} Cr</p>
+                            </div>
+                          </div>
+                          <span className="text-amber-400 font-bold">{deciderState.highestBid} Cr</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  {isHost ? (
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-sm font-semibold text-zinc-400 uppercase tracking-wider block mb-2">Final Price (min {deciderState.highestBid} Cr)</label>
+                        <input
+                          type="number"
+                          value={deciderPrice}
+                          onChange={(e) => setDeciderPrice(e.target.value)}
+                          min={deciderState.highestBid}
+                          step="0.1"
+                          placeholder={`${deciderState.highestBid}`}
+                          className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white text-lg font-bold focus:outline-none focus:border-amber-500 transition-colors"
+                        />
+                      </div>
+                      <button
+                        onClick={handleDeciderSubmit}
+                        disabled={!deciderWinner || !deciderPrice || Number(deciderPrice) < deciderState.highestBid}
+                        className="w-full py-4 bg-amber-600 hover:bg-amber-500 disabled:bg-zinc-800 disabled:text-zinc-500 text-white rounded-xl font-bold text-lg transition-all cursor-pointer"
+                      >
+                        Submit Decision
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="text-center py-4">
+                      <div className="w-6 h-6 border-2 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                      <p className="text-zinc-400 text-sm">Waiting for host to decide the winner...</p>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
             ) : (
               <div className="text-center">
                 <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
@@ -393,7 +491,9 @@ export default function Auction() {
                   )
                 ) : (
                   <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 text-center text-zinc-400">
-                    {isHost ? (
+                    {isDecider ? (
+                      isHost ? 'Use the form above to decide the winner and final price.' : 'Tie detected. Waiting for host to decide...'
+                    ) : isHost ? (
                       <div className="space-y-3">
                         <p>Review results and click Next Player to continue.</p>
                         <button

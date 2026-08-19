@@ -61,6 +61,13 @@ export interface RoomState {
   lastRevealResult: any;
   unsoldPlayers?: { player: PlayerInfo; originalRound: number }[];
   unsoldCount?: number;
+  deciderState?: {
+    roundId: string;
+    player: PlayerInfo;
+    highestBid: number;
+    tiedSquads: { squadId: string; squadName: string; budget: number }[];
+  } | null;
+  deciderHistory?: any[];
   // Private fields (when authenticated)
   myParticipantId?: string;
   mySquadId?: string;
@@ -98,6 +105,7 @@ interface GameContextType {
   endAuction: () => void;
   kickSquad: (squadId: string) => void;
   recallPlayer: (playerId: string) => void;
+  resolveDecider: (winningTeamId: string, finalPrice: number) => void;
   restoreSession: () => Promise<boolean>;
 }
 
@@ -308,6 +316,38 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         const filtered = (prev.unsoldPlayers || []).filter(u => u.player.id !== data.player?.id);
         return { ...prev, unsoldPlayers: filtered, unsoldCount: filtered.length };
       });
+    });
+
+    // Decider required — tie detected
+    newSocket.on('auction:decider_required' as any, (data: any) => {
+      toast.info('Tie detected! Host must decide the winner.');
+      setRoom(prev => prev ? {
+        ...prev,
+        phase: 'DECIDER',
+        deciderState: {
+          roundId: `round_${data.round}`,
+          player: data.player,
+          highestBid: data.highestBid,
+          tiedSquads: data.tiedSquads || [],
+        },
+      } : null);
+    });
+
+    // Decider resolved by host
+    newSocket.on('auction:decider_resolved' as any, (data: any) => {
+      toast.success(`${data.winningTeamName} wins for ${data.finalPrice} Cr (Decider)`);
+      setRoom(prev => prev ? {
+        ...prev,
+        phase: 'REVEALING',
+        deciderState: null,
+        lastRevealResult: {
+          ...prev.lastRevealResult,
+          winnerSquadId: data.winningTeamId,
+          winnerSquadName: data.winningTeamName,
+          winningBid: data.finalPrice,
+          isDeciderRequired: false,
+        },
+      } : null);
     });
 
     // Budget updated
@@ -531,6 +571,13 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     socketRef.current.emit('auction:recall_player', { playerId });
   }, [credentials]);
 
+  // ─── Resolve Decider (Host only) ────────────────────────────────────────
+
+  const resolveDecider = useCallback((winningTeamId: string, finalPrice: number) => {
+    if (!socketRef.current || !credentials?.isHost) return;
+    socketRef.current.emit('auction:resolve_decider' as any, { winningTeamId, finalPrice });
+  }, [credentials]);
+
   // ─── Auto-restore session on mount ───────────────────────────────────────
 
   useEffect(() => {
@@ -583,6 +630,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       endAuction,
       kickSquad,
       recallPlayer,
+      resolveDecider,
       restoreSession,
     }}>
       {children}
