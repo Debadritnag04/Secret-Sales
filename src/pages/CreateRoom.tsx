@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGame } from '../store/GameStateContext';
-import { Settings, Users, ShieldAlert, ArrowRight, Loader2 } from 'lucide-react';
+import { Settings, Users, ShieldAlert, ArrowRight, Loader2, Wallet } from 'lucide-react';
+import { cn } from '../lib/utils';
+
+const PRESET_PURSES = [100, 150, 200, 250, 300];
 
 export default function CreateRoom() {
   const navigate = useNavigate();
@@ -12,20 +15,41 @@ export default function CreateRoom() {
     hostName: 'Host Manager',
     squadName: 'Host FC',
     participantLimit: 12,
-    budget: 100,
-    maxSquadSize: 15,
     minBid: 1,
     allowHostForceReveal: true,
   });
 
+  const [purseMode, setPurseMode] = useState<'PRESET' | 'CUSTOM'>('PRESET');
+  const [presetPurse, setPresetPurse] = useState(200);
+  const [customPurseInput, setCustomPurseInput] = useState('200');
   const [localError, setLocalError] = useState('');
 
+  const getStartingBudget = (): number => {
+    if (purseMode === 'PRESET') return presetPurse;
+    return Number(customPurseInput) || 0;
+  };
+
+  const validatePurse = (): string | null => {
+    const budget = getStartingBudget();
+    if (budget <= 0) return 'Purse must be greater than 0 Cr.';
+    if (budget > 9999.9) return 'Purse cannot exceed 9999.9 Cr.';
+    if (purseMode === 'CUSTOM') {
+      const parts = customPurseInput.split('.');
+      if (parts[1] && parts[1].length > 1) return 'Purse can have at most 1 decimal place.';
+    }
+    return null;
+  };
+
   const handleCreate = async () => {
-    if (form.budget < 10) {
-      setLocalError('Starting budget must be at least 10 Cr.');
+    const purseError = validatePurse();
+    if (purseError) {
+      setLocalError(purseError);
       return;
     }
-    if (form.minBid < 1 || form.minBid >= form.budget) {
+
+    const budget = getStartingBudget();
+
+    if (form.minBid < 0.1 || form.minBid >= budget) {
       setLocalError('Invalid minimum bid.');
       return;
     }
@@ -35,7 +59,7 @@ export default function CreateRoom() {
       auctionName: form.name,
       hostName: form.hostName,
       squadName: form.squadName,
-      startingBudget: form.budget,
+      startingBudget: budget,
       maxParticipants: form.participantLimit,
       minBid: form.minBid,
       allowHostForceReveal: form.allowHostForceReveal,
@@ -47,6 +71,7 @@ export default function CreateRoom() {
   };
 
   const displayError = localError || globalError;
+  const displayBudget = getStartingBudget();
 
   return (
     <div className="max-w-6xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -111,31 +136,105 @@ export default function CreateRoom() {
           </div>
         </section>
 
-        {/* Section B: Budget & Rules */}
+        {/* Section B: Starting Purse */}
+        <section className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6">
+          <div className="flex items-center gap-3 mb-6 pb-4 border-b border-zinc-800">
+            <Wallet className="w-5 h-5 text-emerald-500" />
+            <h2 className="text-xl font-semibold text-white">Starting Purse</h2>
+          </div>
+          <p className="text-sm text-zinc-400 mb-4">Choose the starting budget for each squad.</p>
+
+          {/* Preset / Custom Toggle */}
+          <div className="flex gap-2 mb-6">
+            <button
+              onClick={() => setPurseMode('PRESET')}
+              className={cn(
+                "px-4 py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer",
+                purseMode === 'PRESET' ? "bg-emerald-600 text-white" : "bg-zinc-800 text-zinc-400 hover:text-white"
+              )}
+            >
+              Preset
+            </button>
+            <button
+              onClick={() => setPurseMode('CUSTOM')}
+              className={cn(
+                "px-4 py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer",
+                purseMode === 'CUSTOM' ? "bg-emerald-600 text-white" : "bg-zinc-800 text-zinc-400 hover:text-white"
+              )}
+            >
+              Custom Purse
+            </button>
+          </div>
+
+          {purseMode === 'PRESET' ? (
+            <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
+              {PRESET_PURSES.map(val => (
+                <button
+                  key={val}
+                  onClick={() => setPresetPurse(val)}
+                  className={cn(
+                    "py-3 rounded-xl text-sm font-bold transition-all cursor-pointer border",
+                    presetPurse === val
+                      ? "bg-emerald-600/20 border-emerald-500/50 text-emerald-400"
+                      : "bg-zinc-950 border-zinc-800 text-zinc-300 hover:border-zinc-700"
+                  )}
+                >
+                  {val} Cr
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <div className="relative flex-1">
+                <input
+                  type="number"
+                  value={customPurseInput}
+                  onChange={(e) => setCustomPurseInput(e.target.value)}
+                  min="1"
+                  max="9999.9"
+                  step="0.1"
+                  placeholder="Enter custom purse..."
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white text-lg font-bold focus:outline-none focus:border-emerald-500 transition-colors"
+                />
+              </div>
+              <span className="text-zinc-400 font-medium">Cr</span>
+            </div>
+          )}
+
+          <p className="text-xs text-zinc-500 mt-3">
+            Each squad starts with <span className="text-emerald-400 font-semibold">{displayBudget > 0 ? `${displayBudget} Cr` : '—'}</span>
+          </p>
+        </section>
+
+        {/* Section C: Rules */}
         <section className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-6 pb-4 border-b border-zinc-800">
             <Users className="w-5 h-5 text-emerald-500" />
-            <h2 className="text-xl font-semibold text-white">Budget & Rules</h2>
+            <h2 className="text-xl font-semibold text-white">Bidding Rules</h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-zinc-400">Starting Budget (Cr)</label>
-              <input 
-                type="number" 
-                value={form.budget} 
-                onChange={(e) => setForm({...form, budget: Number(e.target.value)})}
-                className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors"
-              />
-            </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-zinc-400">Min Bid (Cr)</label>
               <input 
                 type="number" 
                 value={form.minBid} 
                 onChange={(e) => setForm({...form, minBid: Number(e.target.value)})}
+                min="0.1"
+                step="0.1"
                 className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors"
               />
+            </div>
+            <div className="space-y-2 flex items-end">
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={form.allowHostForceReveal}
+                  onChange={(e) => setForm({...form, allowHostForceReveal: e.target.checked})}
+                  className="w-5 h-5 accent-emerald-500"
+                />
+                <span className="text-sm text-zinc-300">Allow Host Force Reveal</span>
+              </label>
             </div>
           </div>
         </section>
@@ -156,19 +255,27 @@ export default function CreateRoom() {
               <span className="text-white font-medium">{form.participantLimit} Max</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-zinc-400">Starting Budget</span>
-              <span className="text-emerald-400 font-medium">{form.budget} Cr</span>
+              <span className="text-zinc-400">Starting Purse</span>
+              <span className="text-emerald-400 font-medium">{displayBudget > 0 ? `${displayBudget} Cr` : '—'}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-zinc-400">Purse Mode</span>
+              <span className="text-white font-medium capitalize">{purseMode.toLowerCase()}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-zinc-400">Min Bid</span>
+              <span className="text-white font-medium">{form.minBid} Cr</span>
             </div>
             <div className="flex justify-between">
               <span className="text-zinc-400">Player Pool</span>
-              <span className="text-white font-medium">Full Catalog</span>
+              <span className="text-white font-medium">FC24 Catalogue</span>
             </div>
           </div>
 
           <button 
             onClick={handleCreate}
             disabled={isConnecting}
-            className="w-full mt-8 py-4 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-xl font-semibold transition-all flex items-center justify-center gap-2"
+            className="w-full mt-8 py-4 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-xl font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             {isConnecting ? (
               <>
@@ -185,7 +292,7 @@ export default function CreateRoom() {
           
           <button 
             onClick={() => navigate('/')}
-            className="w-full mt-3 py-3 text-zinc-400 hover:text-white rounded-xl font-medium transition-all"
+            className="w-full mt-3 py-3 text-zinc-400 hover:text-white rounded-xl font-medium transition-all cursor-pointer"
           >
             Cancel
           </button>
